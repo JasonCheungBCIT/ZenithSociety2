@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-ZenithWebsite-4b43cded-94c1-4562-b0d7-4d65adbc1027",
 
   "dependencies": {
@@ -45,8 +45,7 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
-  },
+    }  },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",
