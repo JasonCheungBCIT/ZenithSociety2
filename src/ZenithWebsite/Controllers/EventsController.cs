@@ -34,7 +34,11 @@ namespace ZenithWebsite.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event.SingleOrDefaultAsync(m => m.EventId == id);
+            // Eager loading 
+            var @event = await _context.Event
+                .Include(e => e.Activity)
+                .SingleOrDefaultAsync(m => m.EventId == id);
+
             if (@event == null)
             {
                 return NotFound();
@@ -59,6 +63,9 @@ namespace ZenithWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Add additional data
+                @event.CreationDate = DateTime.Now;
+                // Save
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -89,7 +96,7 @@ namespace ZenithWebsite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,ActivityId,FromDate,IsActive,ToDate")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("EventId,ActivityId,FromDate,IsActive,ToDate,CreatedBy, CreationDate")] Event @event)
         {
             if (id != @event.EventId)
             {
@@ -128,7 +135,10 @@ namespace ZenithWebsite.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event.SingleOrDefaultAsync(m => m.EventId == id);
+            var @event = await _context.Event
+                .Include(e => e.Activity)
+                .SingleOrDefaultAsync(m => m.EventId == id);
+
             if (@event == null)
             {
                 return NotFound();
