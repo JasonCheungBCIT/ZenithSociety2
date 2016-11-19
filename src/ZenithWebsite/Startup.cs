@@ -47,9 +47,12 @@ namespace ZenithWebsite
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ZenithContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<ZenithContext>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
@@ -60,7 +63,7 @@ namespace ZenithWebsite
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ZenithContext db)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -92,6 +95,9 @@ namespace ZenithWebsite
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // Seed Activities and Events if they don't exist 
+            ZenithSeeder.Seed(db);
         }
     }
 }
