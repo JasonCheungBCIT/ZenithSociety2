@@ -40,8 +40,11 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     -->
-                    <li><a asp-area="" asp-controller="Activities" asp-action="Index">Activities</a></li>
-                    <li><a asp-area="" asp-controller="Events" asp-action="Index">Events</a></li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li><a asp-area="" asp-controller="Activities" asp-action="Index">Activities</a></li>
+                        <li><a asp-area="" asp-controller="Events" asp-action="Index">Events</a></li>
+                    }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
