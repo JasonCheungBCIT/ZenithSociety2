@@ -11,7 +11,7 @@ namespace ZenithWebsite.Controllers
 {
     public class HomeController : Controller
     {
-        private const string LONG_DATE_FORMAT = "MMMM dd, yyyy h:mm tt";
+        private const string LONG_DATE_FORMAT = "MMMM dd, yyyy";
         private ZenithContext db;
 
         public HomeController(ZenithContext context)
@@ -31,25 +31,25 @@ namespace ZenithWebsite.Controllers
             if (delta > 0)
                 delta -= 7;
             DateTime monday = today.AddDays(delta);
-            ViewBag.monday = monday.ToString(LONG_DATE_FORMAT);
+            ViewBag.StartOfWeek = monday.ToString(LONG_DATE_FORMAT);
             DateTime sunday = monday.AddDays(7);
 
             //Allow only days this week
             var daysOfTheWeek = @event.Where(e => e.FromDate >= monday && e.FromDate < sunday);
 
             //add to dictionary
-            foreach (var index in daysOfTheWeek.OrderBy(name => name.FromDate).ToList())
+            foreach (var e in daysOfTheWeek.OrderBy(name => name.FromDate).ToList())
             {
-                if (index.IsActive)
+                if (e.IsActive)
                 {
-                    if (Week.ContainsKey(index.FromDate.ToString(LONG_DATE_FORMAT)))
+                    if (Week.ContainsKey(e.FromDate.ToString(LONG_DATE_FORMAT)))
                     {
 
-                        Week[index.FromDate.ToString(LONG_DATE_FORMAT)].Add(index);
+                        Week[e.FromDate.ToString(LONG_DATE_FORMAT)].Add(e);
                     }
                     else
                     {
-                        Week[index.FromDate.ToString(LONG_DATE_FORMAT)] = new List<Event> { index };
+                        Week[e.FromDate.ToString(LONG_DATE_FORMAT)] = new List<Event> { e };
                     }
                 }
             }
