@@ -1,0 +1,17 @@
+﻿// Restore/update packages 
+dotnet restore 
+
+// Run via dotnet (useful to see server and client request/response and outputs)
+dotnet run 
+
+// Create migration for users and roles 
+dotnet ef migrations add YourMigrationName --context ApplicationDbContext 
+
+// Create migration for Zenith models (Activity and Events)
+dotnet ef migrations add YourMigrationName --context ZenithContext 
+
+// Run migrations and seed data for users and roles 
+dotnet ef database update --context ApplicationDbContext 
+
+// Run migrations and seed data for Zenith models 
+dotnet ef database update --context ZenithContext 

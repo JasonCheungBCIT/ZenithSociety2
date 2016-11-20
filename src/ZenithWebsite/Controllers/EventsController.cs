@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ZenithWebsite.Data;
 using ZenithWebsite.Models.ZenithSocietyModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZenithWebsite.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EventsController : Controller
     {
         private readonly ZenithContext _context;
@@ -61,6 +63,7 @@ namespace ZenithWebsite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EventId,ActivityId,FromDate,IsActive,ToDate")] Event @event)
         {
+            // IMPORTANT: Binding ONLY accepts format mm/dd/yyyy hh:mm (local format)
             if (ModelState.IsValid)
             {
                 // Add additional data

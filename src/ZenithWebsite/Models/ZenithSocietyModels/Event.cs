@@ -17,14 +17,14 @@ namespace ZenithWebsite.Models.ZenithSocietyModels
 
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy hh:mm tt}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")] // IMPORTANT: This MUST be in this format. Refer to notes.
         // [AfterNow()]
         [Display(Name = "From")]
         public DateTime FromDate { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy hh:mm tt}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
         // [GreaterThan("FromDate")] // Note: FoolProof Nuget
         // [SameDay("FromDate")]
         [Display(Name = "To")]
