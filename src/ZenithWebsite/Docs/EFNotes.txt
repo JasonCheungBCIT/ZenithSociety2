@@ -1,0 +1,2 @@
+﻿Context classes and files MUST be created in the Data folder (not model).
+Changing model ANNOTATIONS does not require a dotnet command to update the database. 

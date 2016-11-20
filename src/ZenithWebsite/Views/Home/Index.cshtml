@@ -107,3 +107,30 @@
         </ul>
     </div>
 </div>
+
+<div class="text-center container">
+
+    <h2>Events for the Week of @ViewBag.monday</h2>
+    <table class="table table-bordered ">
+
+        @foreach (var date in ViewBag.Week)
+            {
+            <tr>
+                <td class="bg-success" colspan="4">@date.Key</td>
+            </tr>
+
+            foreach (var events in date.Value)
+            {
+                <tr>
+                    <td colspan="1"> @events.FromDate.ToShortTimeString() - @events.ToDate.ToShortTimeString()</td>
+                    <td colspan="4"> @events.Activity.ActivityDescription</td>
+
+                </tr>
+            }
+
+
+        }
+    </table>
+
+
+</div>

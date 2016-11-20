@@ -61,6 +61,7 @@ namespace ZenithWebsite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EventId,ActivityId,FromDate,IsActive,ToDate")] Event @event)
         {
+            // IMPORTANT: Binding ONLY accepts format mm/dd/yyyy hh:mm (local format)
             if (ModelState.IsValid)
             {
                 // Add additional data

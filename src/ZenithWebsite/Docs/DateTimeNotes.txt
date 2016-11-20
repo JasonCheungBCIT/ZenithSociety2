@@ -1,0 +1,42 @@
+﻿### Notes on DateTimePicker Bootstrap widget and DateTime IN GENERAL.
+- Install bootstrap datetimepicker via BOWER (Nuget doesn't work with Core)
+- The glyph icon will ALWAYS float to the right and the input to the left. Therefore parent must be small enough so they don't separate.
+- Make sure you add type="datetime" for the input OR in the model.
+- Make sure model format (specified in the model file) is ALWAYS in the MM/DD/YYYY ... format (local format, so just ensure month is before date).
+- Make sure input format (specified in a custom JS file) is ALWAYS in the MM/DD/YYYY ... format (local format, so just ensure month is before date). 
+	This is so the controller can properly bind or retrieve the values from the view. 
+
+
+
+### Sample usage of DateTimePicker widget
+// custom prefix means you have to declare it yourself (not part of bootstrap, jQuery, etc.)
+
+--- View.cshtml ---
+<div class='col-md-10 custom-width-limiter'>
+	<div class='input-group date custom-datetimepicker'>
+        <input asp-for="FromDate" type="datetime" class="form-control" placeholder="M/D/YYYY HH:MM AM" />
+        <span class="input-group-addon">
+			<span class="glyphicon glyphicon-calendar"></span>
+		</span>
+	</div>
+</div>
+
+--- wwwroot/css/site.css ---
+/* Set widths on the form inputs since otherwise they're 100% wide */
+input,
+select,
+textarea {
+    max-width: 280px;  
+}
+/* Helper for datetimepicker, or the icon will stick to the right */
+.input-width-limiter {
+    max-width: 310px; /* Because of padding/margins, +30px from above value */
+}
+
+--- wwwroot/js/site.js ---
+$(function () {
+	// Remember month must be before date, other than that you can do whatever
+    $('.datetimepicker').datetimepicker({
+        format: 'M/D/YYYY h:mm A'
+    });
+});

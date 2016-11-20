@@ -18,7 +18,7 @@ namespace ZenithWebsite.Models.ZenithSocietyModels
 
         [ScaffoldColumn(false)]
         [DataType(DataType.DateTime)]   // Note?(1/2): Making this DataType.Date will change editor controls too! (so not just a text box)
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy hh:mm}")]    // Note?(2/2): however hh:mm does not show sadly. 
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm}")]    // Note?(2/2): however hh:mm does not show sadly. 
         [Display(Name = "Creation Date")]
         public DateTime CreationDate { get; set; }  
     }
