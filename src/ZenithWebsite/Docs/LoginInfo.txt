@@ -1,0 +1,11 @@
+﻿admin.UserName = "ZenithAdmin";
+admin.Email = "admin@zenith.com";
+admin.Password = "!@#123QWEqwe";
+
+admin2.UserName = "a";
+admin2.Email = "a@a.a";
+admin2.Password = "P@$$w0rd";
+
+member.UserName = "m";
+member.Email = "m@m.c";
+member userPWD = "P@$$w0rd";

@@ -68,6 +68,8 @@ namespace ZenithWebsite.Controllers
             {
                 // Add additional data
                 @event.CreationDate = DateTime.Now;
+                // return _userManager.GetUserAsync(HttpContext.User);     // Alt: if you have access to a _userManager object
+
                 // Save
                 _context.Add(@event);
                 await _context.SaveChangesAsync();

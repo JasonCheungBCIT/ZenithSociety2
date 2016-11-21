@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using ZenithWebsite.Models;
 using ZenithWebsite.Models.AccountViewModels;
 using ZenithWebsite.Services;
+using ZenithWebsite.Data;
 
 namespace ZenithWebsite.Controllers
 {
@@ -36,6 +37,15 @@ namespace ZenithWebsite.Controllers
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Index()
+        {
+            return View();
+            // return View(_context.Roles.ToList());
+        }
+
 
         //
         // GET: /Account/Login
