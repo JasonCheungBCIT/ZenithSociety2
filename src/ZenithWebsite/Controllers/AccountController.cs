@@ -38,16 +38,6 @@ namespace ZenithWebsite.Controllers
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Index()
-        {
-            return View();
-            // return View(_context.Roles.ToList());
-        }
-
-
-        //
         // GET: /Account/Login
         [HttpGet]
         [AllowAnonymous]
