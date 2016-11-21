@@ -163,8 +163,8 @@ namespace ZenithWebsite
                 var chkUser2 = await userManager.CreateAsync(user2, user2PWD);
                 if (chkUser.Succeeded)
                 {
-                    var result1 = userManager.AddToRoleAsync(user, "Admin");
-                    var result2 = userManager.AddToRoleAsync(user2, "Admin");
+                    var result1 = await userManager.AddToRoleAsync(user, "Admin");
+                    var result2 = await userManager.AddToRoleAsync(user2, "Admin");
                 }
             }
 
@@ -173,7 +173,7 @@ namespace ZenithWebsite
             {
                 var role = new IdentityRole();
                 role.Name = "Member";
-                var roleResult = roleManager.CreateAsync(role);
+                var roleResult = await roleManager.CreateAsync(role);
 
                 // Here we create a Admin super user who will maintain the website                  
                 var user = new ApplicationUser();
@@ -185,7 +185,7 @@ namespace ZenithWebsite
 
                 if (chkUser.Succeeded)
                 {
-                    var result1 = userManager.AddToRoleAsync(user, "Member");
+                    var result1 = await userManager.AddToRoleAsync(user, "Member");
                 }
             }
         }
