@@ -43,6 +43,11 @@ namespace ZenithWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+            //enable cors
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()));
+
+
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -117,6 +122,9 @@ namespace ZenithWebsite
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            //Use the new policy globally
+            app.UseCors("AllowAll");
+
 
             app.UseMvc(routes =>
             {
