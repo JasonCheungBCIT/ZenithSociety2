@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using ZenithWebsite.Models.RoleViewModels;
 
 namespace ZenithWebsite.Models.UserRolesViewModel
 {
-    public class UserRolesViewModel
+    public class EditUserRoleViewModel
     {
         [Display(Name = "Username")]
         public string Username { get; set; }
@@ -18,5 +15,10 @@ namespace ZenithWebsite.Models.UserRolesViewModel
 
         [Display(Name = "Roles")]
         public ICollection<String> Roles { get; set; }
+
+        // The selected role to add or delete from a user 
+        [Required]
+        public string SelectedRole { get; set; }
     }
+
 }

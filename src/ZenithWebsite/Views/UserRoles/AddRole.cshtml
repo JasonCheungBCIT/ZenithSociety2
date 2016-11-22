@@ -1,30 +1,30 @@
-@model ZenithWebsite.Models.RoleViewModels.IdentityRoleViewModel
+@model ZenithWebsite.Models.UserRolesViewModel.EditUserRoleViewModel
 
 @{
-    ViewData["Title"] = "Edit Role";
+    ViewData["Title"] = "Add Role to User";
 }
 
 <h2>Edit</h2>
 
-<form asp-action="Edit">
+<form asp-action="AddRole">
     <div class="form-horizontal">
         <h4>Event</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="RoleId" />
+        <input type="hidden" asp-for="Username" />
 
         <div class="form-group">
-            <label asp-for="RoleName" class="control-label col-md-2"></label>
+            <label asp-for="Username" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <input asp-for="RoleName" class="form-control" >
-                <span asp-validation-for="RoleName" class="text-danger" />
+                <input asp-for="Username" class="form-control" disabled >
             </div>
         </div>
 
         <div class="form-group">
-            <label asp-for="NormalizedName" class="control-label col-md-2"></label>
+            <label asp-for="SelectedRole" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <input asp-for="NormalizedName" class="form-control" disabled>
+                <select asp-for="SelectedRole" class="form-control" asp-items="ViewBag.AllRoles"></select>
+                <span asp-validation-for="SelectedRole" class="text-danger" />
             </div>
         </div>
        

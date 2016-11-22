@@ -9,6 +9,7 @@ using ZenithWebsite.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ZenithWebsite.Data;
 using ZenithWebsite.Models.UserRolesViewModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ZenithWebsite.Controllers
 {
@@ -18,34 +19,24 @@ namespace ZenithWebsite.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
-        /*
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IEmailSender _emailSender;
-        private readonly ISmsSender _smsSender;
-        private readonly ILogger _logger;
-        */
-        public UserRolesController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        public UserRolesController(
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-
-            _context = context;
         }
 
         // GET: UserRoles
         public async Task<ActionResult> Index()
         {
-            // Eager loading 
+            // Get users 
             var users = _userManager.Users;
-            var usersc = _context.Users;
+
+            // Convert into a view model 
             var usersView = new List<UserRolesViewModel>();
-            // .Include(e => e.Activity)
-            // .SingleOrDefaultAsync(m => m.EventId == id);
-            var f = users.First().Roles;
-            var f1 = usersc.First().Roles;
             foreach (ApplicationUser usr in users)
             {
-                var test = usr.Roles;
                 var roles = await _userManager.GetRolesAsync(usr);
                 var userView = new UserRolesViewModel()
                 {
@@ -53,83 +44,92 @@ namespace ZenithWebsite.Controllers
                     Email = usr.Email,
                     Roles = roles
                 };
+                usersView.Add(userView);
             }
-            return View(users);
+
+            return View(usersView);
         }
 
-        // GET: UserRoles/Details/5
-        public ActionResult Details(int id)
+        // GET: UserRoles/AddRole/5
+        public async Task<ActionResult> AddRole(string id)
         {
-            return View();
+            // Get user 
+            var user = await _userManager.FindByNameAsync(id);
+            var usersRoles = await _userManager.GetRolesAsync(user);
+
+            // Convert into a view model 
+            var viewModel = new EditUserRoleViewModel()
+            {
+                Username = user.UserName,
+                Email = user.Email,
+                Roles = usersRoles
+            };
+
+            ViewData["AllRoles"] = new SelectList(_roleManager.Roles, "Name", "Name");
+            return View(viewModel);
         }
 
-        // GET: UserRoles/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: UserRoles/Create
+        // POST: UserRoles/AddRole/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> AddRole(string id, EditUserRoleViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
+                var roleToAdd = viewModel.SelectedRole;
+                var user = await _userManager.FindByNameAsync(viewModel.Username);
+                var result = await _userManager.AddToRoleAsync(user, roleToAdd);
 
-                return RedirectToAction("Index");
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                // TODO: Add error message 
             }
-            catch
-            {
-                return View();
-            }
+
+            // If here, then error occured 
+            return View(viewModel);
         }
 
-        // GET: UserRoles/Edit/5
-        public ActionResult Edit(int id)
+        // GET: UserRoles/DeleteRole/Username
+        public async Task<ActionResult> DeleteRole(string id)
         {
-            return View();
+            // Get user 
+            var user = await _userManager.FindByNameAsync(id);
+            var usersRoles = await _userManager.GetRolesAsync(user);
+
+            // Convert into a view model 
+            var viewModel = new EditUserRoleViewModel()
+            {
+                Username = user.UserName,
+                Email = user.Email,
+                Roles = usersRoles
+            };
+
+            ViewData["AllRoles"] = new SelectList(_roleManager.Roles, "Name", "Name");
+            return View(viewModel);
         }
 
-        // POST: UserRoles/Edit/5
+        // POST: UserRoles/DeleteRole/Username
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteRole(string id, EditUserRoleViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add update logic here
+                var roleToDelete = viewModel.SelectedRole;
+                var user = await _userManager.FindByNameAsync(viewModel.Username);
+                var result = await _userManager.RemoveFromRoleAsync(user, roleToDelete);
 
-                return RedirectToAction("Index");
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                // TODO: Add error message 
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: UserRoles/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: UserRoles/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            // If here, then error occured 
+            return View(viewModel);
         }
     }
 }
