@@ -138,7 +138,28 @@ namespace ZenithWebsite
             RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager)
         {
-            // In Startup iam creating first Admin Role and creating a default Admin User   
+            // creating Creating Member role    
+            if (!await roleManager.RoleExistsAsync("Member"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Member";
+                var roleResult = await roleManager.CreateAsync(role);
+
+                // Here we create a Admin super user who will maintain the website                  
+                var user = new ApplicationUser();
+                user.UserName = "m";
+                user.Email = "m@m.c";
+                string userPWD = "P@$$w0rd";
+
+                var chkUser = await userManager.CreateAsync(user, userPWD);
+
+                if (chkUser.Succeeded)
+                {
+                    var result1 = await userManager.AddToRoleAsync(user, "Member");
+                }
+            }
+
+            // Create first Admin Role and creating a default Admin User   
             var adminExists = await roleManager.RoleExistsAsync("Admin");
             if (!adminExists)
             {
@@ -163,29 +184,8 @@ namespace ZenithWebsite
                 var chkUser2 = await userManager.CreateAsync(user2, user2PWD);
                 if (chkUser.Succeeded)
                 {
-                    var result1 = userManager.AddToRoleAsync(user, "Admin");
-                    var result2 = userManager.AddToRoleAsync(user2, "Admin");
-                }
-            }
-
-            // creating Creating Manager role    
-            if (!await roleManager.RoleExistsAsync("Member"))
-            {
-                var role = new IdentityRole();
-                role.Name = "Member";
-                var roleResult = roleManager.CreateAsync(role);
-
-                // Here we create a Admin super user who will maintain the website                  
-                var user = new ApplicationUser();
-                user.UserName = "m";
-                user.Email = "m@m.c";
-                string userPWD = "P@$$w0rd";
-
-                var chkUser = await userManager.CreateAsync(user, userPWD);
-
-                if (chkUser.Succeeded)
-                {
-                    var result1 = userManager.AddToRoleAsync(user, "Member");
+                    var result1 = await userManager.AddToRolesAsync(user, new string[] { "Admin", "Member"});
+                    var result2 = await userManager.AddToRoleAsync(user2, "Admin");
                 }
             }
         }

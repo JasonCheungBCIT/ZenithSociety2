@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using ZenithWebsite.Models;
 using ZenithWebsite.Models.AccountViewModels;
 using ZenithWebsite.Services;
+using ZenithWebsite.Data;
 
 namespace ZenithWebsite.Controllers
 {
@@ -37,7 +38,6 @@ namespace ZenithWebsite.Controllers
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
-        //
         // GET: /Account/Login
         [HttpGet]
         [AllowAnonymous]
