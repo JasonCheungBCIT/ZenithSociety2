@@ -1,0 +1,17 @@
+﻿Step 1 - Cleaning your project 
+a. Try a clean and rebuild first
+b. Delete everything in wwwroot. 
+	- If you have things you want to save, cut them somewhere else.
+
+Step 2 - Getting the fixed files
+a. Create a new ASP.NET Core project.
+b. Build and run it 
+c. Copy all the files and folders in wwwroot into your project wwwroot 
+
+Step 3 - Reinstalling
+a. Build and run the project to test.
+	- Not working? F12 in chrome, click and hold refresh and "Empty Cache and Hard reset". 
+b. Right click project, restore (bower) dependencies. 
+	- You'll get an error "not installed", but any additional packages you need will be. 
+	  The issue is with the custom CORE bootstrap in the way. 
+c. Fix gitignore if need be. 
