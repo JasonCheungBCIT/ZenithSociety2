@@ -61,6 +61,11 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        
+        <!-- Date time picker scripts (2/2) -->
+        <script type="text/javascript" src="~/lib/moment/min/moment.min.js"></script>
+        <script type="text/javascript" src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -72,12 +77,13 @@
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>
+
+        <!-- Date time picker scripts (2/2) -->
+        <script type="text/javascript" src="~/lib/moment/min/moment.min.js"></script>
+        <script type="text/javascript" src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
-
-    <!-- Date time picker scripts (2/2) -->
-    <script type="text/javascript" src="~/lib/moment/min/moment.min.js"></script>
-    <script type="text/javascript" src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
     @RenderSection("scripts", required: false)
 </body>
