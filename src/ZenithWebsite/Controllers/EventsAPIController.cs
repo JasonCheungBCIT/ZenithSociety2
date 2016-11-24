@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using ZenithWebsite.Data;
 using ZenithWebsite.Models.ZenithSocietyModels;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZenithWebsite.Controllers
 {   
+   
     [EnableCors("AllowAll")]
     [Produces("application/json")]
     [Route("api/EventsAPI")]
@@ -31,22 +33,27 @@ namespace ZenithWebsite.Controllers
         }
 
         // GET: api/EventsAPI/5
+        [Authorize]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEvent([FromRoute] int id)
+        public IEnumerable<Event> GetEvent([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            //String[] blah = { "blah", "blue" };
+            //return blah;
+                
+            return _context.Event.Include(@e => @e.Activity);
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
-            Event @event = await _context.Event.Include(@e => @e.Activity).SingleOrDefaultAsync(m => m.EventId == id) ;
+            //Event @event = await _context.Event.Include(@e => @e.Activity).SingleOrDefaultAsync(m => m.EventId == id) ;
 
-            if (@event == null)
-            {
-                return NotFound();
-            }
+            //if (@event == null)
+            //{
+            //    return NotFound();
+            //}
 
-            return Ok(@event);
+            //return Ok(@event);
         }
 
         // PUT: api/EventsAPI/5

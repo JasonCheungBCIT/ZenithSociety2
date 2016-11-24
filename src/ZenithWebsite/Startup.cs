@@ -13,6 +13,12 @@ using ZenithWebsite.Models;
 using ZenithWebsite.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using SimpleTokenProvider;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace ZenithWebsite
 {
@@ -20,6 +26,8 @@ namespace ZenithWebsite
     {
         public Startup(IHostingEnvironment env)
         {
+            
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -43,10 +51,11 @@ namespace ZenithWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
             //enable cors
-            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()));
-
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                                                .WithHeaders("origin")
+                                                .AllowAnyMethod()
+                                                .AllowCredentials()));
 
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
@@ -82,6 +91,8 @@ namespace ZenithWebsite
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
+
+
             });
 
             services.AddMvc();
@@ -123,8 +134,9 @@ namespace ZenithWebsite
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             //Use the new policy globally
-            app.UseCors("AllowAll");
 
+            app.UseCors("AllowAll");
+            
 
             app.UseMvc(routes =>
             {
@@ -132,6 +144,52 @@ namespace ZenithWebsite
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //TRYING WEB API AUTH
+            // secretKey contains a secret passphrase only your server knows
+            string secretKey = "mysupersecret_secretkey!123";
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                // The signing key must match!
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                // Validate the JWT Issuer (iss) claim
+                ValidateIssuer = true,
+                ValidIssuer = "ExampleIssuer",
+
+                // Validate the JWT Audience (aud) claim
+                ValidateAudience = true,
+                ValidAudience = "ExampleAudience",
+
+                // Validate the token expiry
+                ValidateLifetime = true,
+
+                // If you want to allow a certain amount of clock drift, set that here:
+                ClockSkew = TimeSpan.Zero
+            };
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = tokenValidationParameters
+            });
+
+            //TOKEN
+            // Add JWT generation endpoint:
+            var options = new TokenProviderOptions
+            {
+                Audience = "ExampleAudience",
+                Issuer = "ExampleIssuer",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+            };
+            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+
+
+            //END OF AUTH TRIAL
 
             // Seed demo Activities and Events if they don't exist 
             ZenithSeeder.Seed(db);
@@ -197,5 +255,7 @@ namespace ZenithWebsite
                 }
             }
         }
+
+        
     }
 }
