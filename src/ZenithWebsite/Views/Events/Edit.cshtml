@@ -19,7 +19,7 @@
             <label asp-for="ActivityId" class="control-label col-md-2"></label>
             <div class="col-md-10">
                 <select asp-for="ActivityId" class="form-control" asp-items="ViewBag.ActivityId"></select>
-                <span asp-validation-for="ActivityId" class="text-danger" />
+                <span asp-validation-for="ActivityId" class="text-danger"></span>
             </div>
         </div>
 
@@ -32,7 +32,7 @@
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
-                <span asp-validation-for="FromDate" class="text-danger" />
+                <span asp-validation-for="FromDate" class="text-danger"></span>
             </div>
         </div>
 
@@ -46,7 +46,7 @@
                     </span>
                 </div>
             </div>
-            <span asp-validation-for="ToDate" class="text-danger" />
+            <span asp-validation-for="ToDate" class="text-danger"></span>
         </div>
 
         <div class="form-group">

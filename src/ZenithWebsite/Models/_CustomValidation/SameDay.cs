@@ -13,7 +13,7 @@ namespace ZenithWebsite.Models.CustomValidation
     {
         private string otherDatePropertyName;
 
-        public SameDay(string otherDatePropertyName) : base("{0} must be after the current time")
+        public SameDay(string otherDatePropertyName) : base("Must be on the same day as " + otherDatePropertyName)
         {
             this.otherDatePropertyName = otherDatePropertyName;
         }
@@ -34,7 +34,7 @@ namespace ZenithWebsite.Models.CustomValidation
 
             if (thisDate.Date != otherDate.Date)
             { 
-                return new ValidationResult("Must be on the same date");
+                return new ValidationResult(ErrorMessage);
             }
 
             return ValidationResult.Success;

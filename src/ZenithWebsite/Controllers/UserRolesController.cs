@@ -117,6 +117,12 @@ namespace ZenithWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (viewModel.Username == "a" && viewModel.SelectedRole.ToUpper() == "ADMIN")
+                {
+                    ModelState.AddModelError(string.Empty, "User 'a' cannot be removed from Admin");
+                    return View(viewModel);
+                }
+
                 var roleToDelete = viewModel.SelectedRole;
                 var user = await _userManager.FindByNameAsync(viewModel.Username);
                 var result = await _userManager.RemoveFromRoleAsync(user, roleToDelete);

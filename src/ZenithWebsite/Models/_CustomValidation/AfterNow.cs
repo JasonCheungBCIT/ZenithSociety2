@@ -9,7 +9,7 @@ namespace ZenithWebsite.Models.CustomValidation
 {
     public class AfterNow : ValidationAttribute
     {
-        public AfterNow() : base("{0} must be after the current time") { }
+        public AfterNow() : base("Must be after the current time") { }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
