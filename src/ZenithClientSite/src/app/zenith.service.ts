@@ -21,12 +21,12 @@ export class ZenithService {
   }
 
   getAPIToken(username: string, password: string): Promise<Token> {
-    var body = 'username='+username+'&password='+password;
+    var body = 'grant_type=password&username='+username+'&password='+password;
     var headers3 = new Headers();
     headers3.append('Content-Type', 'application/x-www-form-urlencoded');
 
     return this.http
-      .post(this.BASE_URL + '/token', body, { headers: headers3 })
+      .post(this.BASE_URL + '/connect/token', body, { headers: headers3 })
       .toPromise()
       .then(response => response.json() as Token)
       .catch(this.handleError);
@@ -37,7 +37,7 @@ export class ZenithService {
     var headers2 = new Headers({ 'Accept': 'application/json' });
     headers2.append('Authorization', 'Bearer '+ token);
     //headers2.append('Access-Control-Allow-Origin', 'http://localhost:4200')
-    headers2.append('Content-Type', 'application/json')
+    //headers2.append('Content-Type', 'application/json')
     let options = new RequestOptions({ headers: headers2 });
 
     return this.http.get(this.BASE_URL + '/api/eventsAPI/2',options)

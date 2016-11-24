@@ -19,6 +19,8 @@ using SimpleTokenProvider;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using OpenIddict;
+using CryptoHelper;
 
 namespace ZenithWebsite
 {
@@ -38,7 +40,7 @@ namespace ZenithWebsite
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets();
 
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
+                //* This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
@@ -53,9 +55,23 @@ namespace ZenithWebsite
         {
             //enable cors
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
-                                                .WithHeaders("origin")
+                                                .AllowAnyHeader()
                                                 .AllowAnyMethod()
                                                 .AllowCredentials()));
+
+
+            services.AddOpenIddict<ApplicationDbContext>()
+
+                        .AddMvcBinders()
+                        .EnableAuthorizationEndpoint("/connect/authorize")
+                        .EnableTokenEndpoint("/connect/token")
+                        .EnableLogoutEndpoint("/connect/logout")
+                        .AllowPasswordFlow()
+                        .AllowAuthorizationCodeFlow()
+                        .DisableHttpsRequirement()
+                        .AddEphemeralSigningKey();
+
+
 
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
@@ -136,14 +152,50 @@ namespace ZenithWebsite
             //Use the new policy globally
 
             app.UseCors("AllowAll");
-            
 
-            app.UseMvc(routes =>
+            app.UseOAuthValidation();
+
+            app.UseOpenIddict();
+
+
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseMvcWithDefaultRoute();
+
+
+            using ( context = new ApplicationDbContext(
+    app.ApplicationServices.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+                context.Database.EnsureCreated();
+
+                if (!context.Applications.Any())
+                {
+                    context.Applications.Add(new OpenIddictApplication
+                    {
+                        // Assign a unique identifier to your client app:
+                        Id = "48BF1BC3-CE01-4787-BBF2-0426EAD21342",
+
+                        // Assign a display named used in the consent form page:
+                        DisplayName = "MVC Core client application",
+
+                        // Register the appropriate redirect_uri and post_logout_redirect_uri:
+                        RedirectUri = "http://localhost:53507/signin-oidc",
+                        LogoutRedirectUri = "http://localhost:53507/",
+                        ClientSecret = Crypto.HashPassword("secret_secret_secret"),
+
+                        // Note: use "public" for JS/mobile/desktop applications
+                        // and "confidential" for server-side applications.
+                        Type = OpenIddictConstants.ClientTypes.Confidential
+                    });
+
+                    context.SaveChanges();
+                }
+            }
 
             //TRYING WEB API AUTH
             // secretKey contains a secret passphrase only your server knows
