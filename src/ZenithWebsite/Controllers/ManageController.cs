@@ -12,7 +12,7 @@ using ZenithWebsite.Services;
 
 namespace ZenithWebsite.Controllers
 {
-    [Authorize]
+    
     public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

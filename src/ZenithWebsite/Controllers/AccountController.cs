@@ -15,7 +15,6 @@ using ZenithWebsite.Data;
 
 namespace ZenithWebsite.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
