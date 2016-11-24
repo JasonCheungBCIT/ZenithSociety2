@@ -31,12 +31,7 @@ namespace ZenithWebsite.Controllers
             List<IdentityRoleViewModel> rolesView = new List<IdentityRoleViewModel>();
             foreach (IdentityRole r in roles)
             {
-                rolesView.Add(new IdentityRoleViewModel()
-                {
-                    RoleId = r.Id,
-                    RoleName = r.Name,
-                    NormalizedName = r.NormalizedName
-                });
+                rolesView.Add(getViewModelFromModel(r));
             }
 
             // Display
@@ -46,11 +41,12 @@ namespace ZenithWebsite.Controllers
         // GET: Roles/Details/5
         public async Task<ActionResult> Details(string id)
         {
-            var roleView = await getRoleViewById(id);
-            if (roleView == null)
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
+            var roleView = getViewModelFromModel(role);
             return View(roleView);
         }
 
@@ -67,7 +63,7 @@ namespace ZenithWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Add additional data 
+                // Convert view model to a model  
                 var newRole = new IdentityRole();
                 newRole.Name = roleView.RoleName;
                 var newRoleResult = await _roleManager.CreateAsync(newRole);
@@ -89,11 +85,12 @@ namespace ZenithWebsite.Controllers
         // GET: Roles/Edit/5
         public async Task<ActionResult> Edit(string id)
         {
-            var roleView = await getRoleViewById(id);
-            if (roleView == null)
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
+            var roleView = getViewModelFromModel(role);
             return View(roleView);
         }
 
@@ -105,22 +102,22 @@ namespace ZenithWebsite.Controllers
             if (ModelState.IsValid)
             {
                 var role = await _roleManager.FindByIdAsync(roleView.RoleId);
+                role.Name = roleView.RoleName;
+                var result = await _roleManager.UpdateAsync(role);
 
+                // Fast exit if editing role 'admin'
                 if (role.NormalizedName == "ADMIN")
                 {
                     ModelState.AddModelError(string.Empty, "Admin role cannot be edited");
                     return View(roleView);
                 }
 
-                role.Name = roleView.RoleName;
-                var result = await _roleManager.UpdateAsync(role);
-
                 if (result.Succeeded) { 
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to update role");
+                    AddErrors(result);
                 }
             }
 
@@ -130,49 +127,69 @@ namespace ZenithWebsite.Controllers
         // GET: Roles/Delete/5
         public async Task<ActionResult> Delete(string id)
         {
-            var roleView = await getRoleViewById(id);
-            if (roleView == null)
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
-
+            var roleView = getViewModelFromModel(role);
             return View(roleView);
         }
 
         // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(string id)
+        public async Task<ActionResult> DeleteConfirmed(string id, IdentityRoleViewModel viewModel)
         {
             var role = await _roleManager.FindByIdAsync(id);
 
-            if (role != null && role.NormalizedName != "ADMIN")
-            { 
-                var result = await _roleManager.DeleteAsync(role);
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        // Warning: This makes it a little laggier for some reason.
-        // Helper to create roleview 
-        private async Task<IdentityRoleViewModel> getRoleViewById(string id)
-        {
-            var role = await _roleManager.FindByIdAsync(id);
             if (role == null)
             {
-                return null;
+                ModelState.AddModelError(String.Empty, "Role not found.");
+                return View(viewModel);
             }
 
-            // Convert to a model we can use and edit 
-            var roleView = new IdentityRoleViewModel()
+            if (role.NormalizedName == "ADMIN")
+            {
+                ModelState.AddModelError(String.Empty, "Role 'Admin' cannot be deleted.");
+                return View(viewModel);
+            }
+
+            var result = await _roleManager.DeleteAsync(role);
+
+            if (!result.Succeeded)
+            {
+                AddErrors(result);
+                return View(viewModel);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+
+
+        #region Helpers
+
+        private IdentityRoleViewModel getViewModelFromModel(IdentityRole role)
+        {
+            return new IdentityRoleViewModel()
             {
                 RoleId = role.Id,
                 RoleName = role.Name,
                 NormalizedName = role.NormalizedName
             };
-
-            return roleView;
         }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        #endregion
     }
 }
