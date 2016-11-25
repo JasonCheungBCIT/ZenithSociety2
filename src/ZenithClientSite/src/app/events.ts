@@ -1,3 +1,5 @@
+import {Activity} from './activity';
+
 export class Events {
   eventId:number;
   fromDate:string;
@@ -6,5 +8,5 @@ export class Events {
   createdBy:string;
   creationDate: string;
   activityId:number;
-  activity:string; //null?
+  activity: Activity; //null?
 }

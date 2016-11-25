@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {Events} from './events';
+import{Activity} from './activity';
 import {ZenithService} from './zenith.service';
 import {Users} from './Users';
 import {Token} from './token';
