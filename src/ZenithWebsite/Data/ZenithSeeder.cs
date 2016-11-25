@@ -53,8 +53,8 @@ namespace ZenithWebsite.Data
             var e = new Event()
             {
                 EventId = 1,
-                FromDate = new DateTime(2016, 11, 5, 19, 0, 0),
-                ToDate = new DateTime(2016, 11, 5, 20, 0, 0),
+                FromDate = new DateTime(2016, 11, 25, 19, 0, 0),
+                ToDate = new DateTime(2016, 11, 25, 20, 0, 0),
                 CreatedBy = "Amanda",
                 IsActive = true,
                 CreationDate = new DateTime(2016, 11, 4, 12, 0, 0),
@@ -63,8 +63,8 @@ namespace ZenithWebsite.Data
             events.Add(new Event()
             {
                 EventId = 1,
-                FromDate = new DateTime(2016, 11, 5, 19, 0, 0),
-                ToDate = new DateTime(2016, 11, 5, 20, 0, 0),
+                FromDate = new DateTime(2016, 11, 24, 19, 0, 0),
+                ToDate = new DateTime(2016, 11, 24, 20, 0, 0),
                 CreatedBy = "Amanda",
                 IsActive = true,
                 CreationDate = new DateTime(2016, 11, 4, 12, 0, 0),
@@ -73,8 +73,8 @@ namespace ZenithWebsite.Data
             events.Add(new Event()
             {
                 EventId = 2,
-                FromDate = new DateTime(2016, 11, 6, 10, 30, 0),
-                ToDate = new DateTime(2016, 11, 6, 12, 0, 0),
+                FromDate = new DateTime(2016, 11, 24, 10, 30, 0),
+                ToDate = new DateTime(2016, 11, 24, 12, 0, 0),
                 CreatedBy = "Bob",
                 IsActive = false,
                 CreationDate = new DateTime(2016, 11, 5, 12, 0, 0),
@@ -83,8 +83,8 @@ namespace ZenithWebsite.Data
             events.Add(new Event()
             {
                 EventId = 3,
-                FromDate = new DateTime(2016, 11, 7, 10, 30, 0),
-                ToDate = new DateTime(2016, 11, 7, 12, 0, 0),
+                FromDate = new DateTime(2016, 12, 20, 10, 30, 0),
+                ToDate = new DateTime(2016, 12, 20, 12, 0, 0),
                 CreatedBy = "Coot",
                 IsActive = true,
                 CreationDate = new DateTime(2016, 11, 6, 12, 0, 0),
@@ -93,8 +93,8 @@ namespace ZenithWebsite.Data
             events.Add(new Event()
             {
                 EventId = 4,
-                FromDate = new DateTime(2016, 11, 7, 10, 30, 0),
-                ToDate = new DateTime(2016, 11, 7, 12, 0, 0),
+                FromDate = new DateTime(2016, 11, 27, 10, 30, 0),
+                ToDate = new DateTime(2016, 11, 27, 12, 0, 0),
                 CreatedBy = "Coot",
                 IsActive = true,
                 CreationDate = new DateTime(2016, 11, 6, 12, 0, 0),
@@ -103,8 +103,8 @@ namespace ZenithWebsite.Data
             events.Add(new Event()
             {
                 EventId = 5,
-                FromDate = new DateTime(2016, 10, 28, 10, 30, 0),
-                ToDate = new DateTime(2016, 10, 28, 12, 0, 0),
+                FromDate = new DateTime(2016, 11, 28, 10, 30, 0),
+                ToDate = new DateTime(2016, 11, 28, 12, 0, 0),
                 CreatedBy = "Bob",
                 IsActive = true,
                 CreationDate = new DateTime(2016, 10, 20, 12, 0, 0),

@@ -32,7 +32,7 @@ export class ZenithService {
       .catch(this.handleError);
   }
 
-  getNewWeek(token: string, num: number): Promise<string[]>{
+  getNewWeek(token: string, num: number): Promise<Events[]>{
     var body = '';
     var headers2 = new Headers({ 'Accept': 'application/json' });
     headers2.append('Authorization', 'Bearer '+ token);
@@ -40,9 +40,9 @@ export class ZenithService {
     //headers2.append('Content-Type', 'application/json')
     let options = new RequestOptions({ headers: headers2 });
 
-    return this.http.get(this.BASE_URL + '/api/eventsAPI/2',options)
+    return this.http.get(this.BASE_URL + '/api/eventsAPI/' + num.toString() ,options)
       .toPromise()
-      .then(response => response.json() as string[])
+      .then(response => response.json() as Events[])
       .catch(this.handleError);
   }
 

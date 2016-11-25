@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ZenithWebsite.Controllers
-{   
-   
+{
+
     [EnableCors("AllowAll")]
     [Produces("application/json")]
     [Route("api/EventsAPI")]
@@ -27,9 +27,36 @@ namespace ZenithWebsite.Controllers
 
         // GET: api/EventsAPI
         [HttpGet]
-        public IEnumerable<Event> GetEvent()
+        public List<Event> GetEvent()
         {
-            return _context.Event.Include(@e => @e.Activity);
+            var @events = _context.Event.Include(that => that.Activity).OrderBy(s => s.FromDate);
+
+            //Dictionary<String, List<Event>> Week = new Dictionary<String, List<Event>>();
+            List<Event> Week = new List<Event>();
+            //Find the monday of this week
+            DateTime today = DateTime.Now;
+            int delta = DayOfWeek.Monday - today.DayOfWeek;
+            if (delta > 0)
+            {
+                delta -= 7;
+            }
+                
+            DateTime monday = today.AddDays(delta);
+            DateTime sunday = monday.AddDays(6);
+
+            foreach (var item in @events)
+            {
+                if (item.FromDate >= monday && item.FromDate <= sunday)
+                {
+                    if (item.IsActive)
+                    {
+                        Week.Add(item);
+                    }
+
+                }
+            }
+            
+            return Week;
         }
 
         // GET: api/EventsAPI/5
@@ -37,23 +64,32 @@ namespace ZenithWebsite.Controllers
         [HttpGet("{id}")]
         public IEnumerable<Event> GetEvent([FromRoute] int id)
         {
-            //String[] blah = { "blah", "blue" };
-            //return blah;
+            var @events = _context.Event.Include(that => that.Activity).OrderBy(s => s.FromDate);
+
+            //Dictionary<String, List<Event>> Week = new Dictionary<String, List<Event>>();
+            List<Event> Week = new List<Event>();
+            //Find the monday of this week
+            int WeekOffset = (7 * id);
+            DateTime today = DateTime.Now.AddDays(WeekOffset);
+            int delta = DayOfWeek.Monday - (today.DayOfWeek);
+            if (delta > 0) { delta -= 7; }
                 
-            return _context.Event.Include(@e => @e.Activity);
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
+            DateTime monday = today.AddDays(delta);
+            DateTime sunday = monday.AddDays(7);
 
-            //Event @event = await _context.Event.Include(@e => @e.Activity).SingleOrDefaultAsync(m => m.EventId == id) ;
+            foreach (var item in @events)
+            {
+                if (item.FromDate >= monday && item.FromDate < sunday)
+                {
+                    if (item.IsActive)
+                    {
+                        Week.Add(item);
+                    }
 
-            //if (@event == null)
-            //{
-            //    return NotFound();
-            //}
+                }
+            }
 
-            //return Ok(@event);
+            return Week;
         }
 
         // PUT: api/EventsAPI/5
