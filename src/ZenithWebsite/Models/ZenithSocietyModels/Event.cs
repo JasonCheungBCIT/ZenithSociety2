@@ -16,17 +16,17 @@ namespace ZenithWebsite.Models.ZenithSocietyModels
         public int EventId { get; set; }
 
         [Required]
+        [AfterNow()]
         [DataType(DataType.DateTime)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")] // IMPORTANT: This MUST be in this format. Refer to notes.
-        [AfterNow()]
         [Display(Name = "From")]
         public DateTime FromDate { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
         [AfterTime("FromDate")]
         [SameDay("FromDate")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
         [Display(Name = "To")]
         public DateTime ToDate { get; set; }
 

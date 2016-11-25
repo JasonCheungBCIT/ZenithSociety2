@@ -18,6 +18,7 @@ namespace ZenithWebsite.Models.UserRolesViewModel
 
         // The selected role to add or delete from a user 
         [Required]
+        [Display(Name = "Select Role")]
         public string SelectedRole { get; set; }
     }
 

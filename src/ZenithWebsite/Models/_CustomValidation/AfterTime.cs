@@ -13,7 +13,7 @@ namespace ZenithWebsite.Models.CustomValidation
     {
         private string otherDatePropertyName;
 
-        public AfterTime(string otherDatePropertyName) : base("{0} must be after {1} time.")
+        public AfterTime(string otherDatePropertyName) : base("Must be after " + otherDatePropertyName + " time.")
         {
             this.otherDatePropertyName = otherDatePropertyName;
         }
@@ -32,9 +32,9 @@ namespace ZenithWebsite.Models.CustomValidation
             var otherDate = (DateTime)property.GetValue(validationContext.ObjectInstance, null);
             var thisDate = (DateTime)value;
 
-            if (thisDate < otherDate)
+            if (thisDate <= otherDate)
             { 
-                return new ValidationResult("Must be after " + otherDate);
+                return new ValidationResult(ErrorMessage);
             }
 
             return ValidationResult.Success;
