@@ -33,17 +33,24 @@
 
 
     <table class="table table-striped table-bordered" style="width: 50%; margin: auto;">
-      <tbody *ngFor="let e of events; let i=index;">
+      <tbody *ngFor="let key of eventsKeys;">
+        
         <tr>
-          <td class="success" colspan="2">{{e.fromDate | date:'longDate'}}</td>
+          <td class="success" colspan="2">{{key}}</td>
         </tr>
-        <tr>
-          <td>{{e.fromDate | date: "shortTime"}}
-            -
-            {{e.toDate | date: "shortTime"}}</td>
 
-          <td>{{e.activity.activityDescription}}</td>
-        </tr>
+        <div *ngFor="let event of eventsDictionary[key];">
+          
+          <tr>
+            <td>{{event.fromDate | date: "shortTime"}}
+                -
+                {{event.toDate | date: "shortTime"}}</td>
+
+            <td>{{event.activity.activityDescription}}</td>
+          </tr>
+        
+        </div>
+
       </tbody>
     </table>
     <!-- Form -->

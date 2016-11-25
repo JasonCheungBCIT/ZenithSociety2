@@ -21,18 +21,39 @@ export class AppComponent implements OnInit {
   showLogin = false;
   fail = false;
 
-
+  eventsKeys: string[] = [];                          // array of keys in the eventsDictionary 
+  eventsDictionary: { [key: string]: Events[] } = {}; // [ Day => Event ]
+  
   constructor(private ZenithService: ZenithService) { }
 
   getEvents(): void {
-    this.ZenithService.getEvents().then(events => this.events = events);
-
+    this.ZenithService.getEvents().then(events => this.reformatData(events));
   }
   getNextWeek(num: number): void {
-      this.count += num;
-    this.ZenithService.getNewWeek(this.token.access_token, this.count).then(events => this.events = events)
-
+    console.log("Get next week");
+    this.count += num;
+    this.ZenithService.getNewWeek(this.token.access_token, this.count)
+      .then(events => this.reformatData(events))
   }
+
+  reformatData(data: Events[]) {
+    console.log(data);
+    console.log(data[0]);
+    for (let e of data) {
+      console.log(e);
+      let day = new Date(e.fromDate)
+      let dayKey = day.toDateString();
+      
+      if (!this.eventsKeys.find(s => s == dayKey))
+        this.eventsKeys.push(dayKey);
+      // Create or push 
+      (this.eventsDictionary[dayKey] = this.eventsDictionary[dayKey] ? this.eventsDictionary[dayKey] : []).push(e);
+    }
+
+    console.log(this.eventsKeys)
+    console.log(this.eventsDictionary);
+  }
+
   ngOnInit(): void {
     this.getEvents();
   }
