@@ -147,8 +147,11 @@ namespace ZenithWebsite
 
         [HttpPost("~/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange(OpenIdConnectRequest request) {
+
             if (request.IsPasswordGrantType()) {
+
                 var user = await _userManager.FindByNameAsync(request.Username);
+
                 if (user == null) {
                     return BadRequest(new OpenIdConnectResponse {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
@@ -196,6 +199,8 @@ namespace ZenithWebsite
                     await _userManager.ResetAccessFailedCountAsync(user);
                 }
 
+
+
                 // Create a new authentication ticket.
                 var ticket = await CreateTicketAsync(request, user);
 
@@ -206,6 +211,29 @@ namespace ZenithWebsite
                 Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
                 ErrorDescription = "The specified grant type is not supported."
             });
+        }
+
+        [Authorize]
+        [HttpPost("~/connect/roles"), Produces("application/json")]
+        public async Task<IActionResult> GetRoles(OpenIdConnectRequest request)
+        {
+            var user = await _userManager.FindByIdAsync( HttpContext.User.Identity.Name);
+
+            if (!(_userManager.IsInRoleAsync(user, "Admin").Result
+                && _userManager.IsInRoleAsync(user, "Member").Result))
+            {
+                return Ok(new JsonResult("privileged: false")
+                {
+                    StatusCode = 200
+                });
+            } 
+            else
+            {
+                return Ok(new JsonResult("privileged: true")
+                {
+                    StatusCode = 200
+                });
+            }
         }
 
         private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, ApplicationUser user) {
