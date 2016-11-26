@@ -18,6 +18,8 @@ using OpenIddict;
 using ZenithWebsite.Models;
 using ZenithWebsite.Helpers;
 using ZenithWebsite.Authorization;
+using ZenithWebsite.Models.AccountViewModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ZenithWebsite
 {
@@ -25,14 +27,41 @@ namespace ZenithWebsite
         private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AuthorizationController(
             OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager) {
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
+        {
             _applicationManager = applicationManager;
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        [HttpPost("~/connect/register")]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // Give the user a "member" role
+                    await this._userManager.AddToRoleAsync(user, "Member");
+                    return Ok();
+                }
+            }
+
+            // If we got this far, something failed
+            return View("Error", new ErrorViewModel
+            {
+                Error = OpenIdConnectConstants.Errors.ServerError,
+                ErrorDescription = "An internal error has occurred - please check your form data."
+            });
         }
 
         // Note: to support interactive flows like the code flow,
