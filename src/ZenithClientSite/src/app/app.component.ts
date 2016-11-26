@@ -25,6 +25,8 @@ export class AppComponent implements OnInit {
   showLogin = false;
   showRegister = false;
   fail = false;
+  error: string = "";
+  errorBool = false;
   what : string[] = [];
   eventsKeys: string[] = [];                          // array of keys in the eventsDictionary
   eventsDictionary: { [key: string]: Events[] } = {}; // [ Day => Event ]
@@ -68,29 +70,34 @@ export class AppComponent implements OnInit {
     this.getEvents();
   }
 
-  verify(): void {
+  verify(username:string, password: string): void {
     this.ZenithService
-      .getAPIToken(this.user.username, this.user.password)
+      .getAPIToken(username, password)
       .then(token => this.onVerifyResult(token))
+      .catch(error => this.handleRegisterError(error))
   }
 
   register(): void{
     this.ZenithService
       .register(this.newUser)
       .then(response => this.onRegisterResult(response))
-      .catch(this.handleRegisterError);
+      .catch(error => this.handleRegisterError(error));
   }
 
-  handleRegisterError(error: any): Promise<any> {
-    console.log("Handle register error");
-    return Promise.reject(error.message || error);
+  onRegisterResult(newUser: string[]){
+    //console.log(newUser)
+    console.log(this.newUser.FirstName);
+    this.verify(this.newUser.Username, this.newUser.Password);
+  }
+  handleRegisterError(error: any) {
+    console.log(error);
+    this.errorBool = true;
+    this.error = "Attempt Failed, Please Try Again!"
   }
 
-  onRegisterResult(response: string[]){
-    console.log("User registration OK");
-  }
 
-  handleVerifyResult(error: any): Promise<any> {
+
+  handleVerifyResult(error: any) {
     console.log("Handle verify error");
     return Promise.reject(error.messge || error);
   }

@@ -13,19 +13,17 @@
       <div *ngIf="!token">
         <h1>Login</h1>
         <div class="form-inline">
-          <label >Username:</label>
           <input class="form-control" type="text" placeholder="Username" [(ngModel)]="user.username">
         </div>
         <div class="form-inline">
-          <label >Password:</label>
           <input class="form-control" type="password" placeholder="Password" [(ngModel)]="user.password">
         </div>
-        <div *ngIf="fail == true">
-          <h5 id="text-danger">Authentication Failed, please try again</h5>
+        <div *ngIf="errorBool">
+          <h5 id="text-danger">{{error}}</h5>
         </div>
-        <button class="btn btn-success" (click)="verify()" type="button" name="button">Login</button>
+        <button class="btn btn-success" (click)="verify(user.username, user.password)" type="button" name="button">Login</button>
         <button class="btn btn-danger" (click)="showLogin = false" type="button" name="button">Close</button>
-        <button class="btn btn-default" (click)="showLogin = false; showRegister = true" type="button" name="button">Register</button>
+        <button class="btn btn-default" (click)="showLogin = false; showRegister = true;errorBool = false" type="button" name="button">Register</button>
 
       </div>
       <div *ngIf="token" class="form-inline">
@@ -35,42 +33,45 @@
     <!-- END LOGIN -->
 
     <!-- REGISTER -->
-    <div id="backgroundGroup" *ngIf="showRegister">
+    <div class="container" id="backgroundGroup" *ngIf="showRegister">
       <!-- REGISTER FORM -->
+      <div *ngIf="!token" >
 
         <h1>Register</h1>
         <div class="form-inline">
-          <label >Username:</label>
           <input class="form-control" type="text" placeholder="Username" [(ngModel)]="newUser.Username">
         </div>
         <div class="form-inline">
-          <label >Firstname:</label>
-          <input class="form-control" type="text" placeholder="Username" [(ngModel)]="newUser.FirstName">
+          <input class="form-control" type="text" placeholder="First name" [(ngModel)]="newUser.FirstName">
         </div>
         <div class="form-inline">
-          <label >Lastname:</label>
-          <input class="form-control" type="text" placeholder="Username" [(ngModel)]="newUser.LastName">
+          <input class="form-control" type="text" placeholder="Last name" [(ngModel)]="newUser.LastName">
         </div>
         <div class="form-inline">
-          <label >Email:</label>
-          <input class="form-control" type="email" placeholder="Username" [(ngModel)]="newUser.Email">
+          <input class="form-control" type="email" placeholder="Email" [(ngModel)]="newUser.Email">
         </div>
         <div class="form-inline">
-          <label >Password:</label>
           <input class="form-control" type="password" placeholder="Password" [(ngModel)]="newUser.Password">
         </div>
         <div class="form-inline">
-          <label >Password Confirm:</label>
-          <input class="form-control" type="password" placeholder="Password" [(ngModel)]="newUser.ConfirmPassword">
+          <input class="form-control" type="password" placeholder="Confirm Password" [(ngModel)]="newUser.ConfirmPassword">
         </div>
-        <div *ngIf="fail == true">
-          <h5 id="text-danger">Authentication Failed, please try again</h5>
+        <div *ngIf="errorBool">
+          <h5 id="text-danger">{{error}}</h5>
         </div>
+
         <button class="btn btn-success" (click)="register()" type="button" name="button">Register</button>
         <button class="btn btn-danger" (click)="showRegister = false" type="button" name="button">Close</button>
-        <button class="btn btn-default" (click)="showRegister = false ; showLogin=true" type="button" name="button">Login</button>
+        <button class="btn btn-default" (click)="showRegister = false ; showLogin=true; errorBool = false" type="button" name="button">Login</button>
+
+      </div>
+      <div *ngIf="token" class="form-inline">
+        <button class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button class="form-control" (click)="getNextWeek(1)">></button>
+      </div>
 
     </div>
+    <div id="table">
+
     <table id="table" class="table table-striped table-bordered" style="width: 50%; margin: auto;">
       <tbody *ngFor="let key of eventsKeys;">
         <tr>
@@ -82,6 +83,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
     <!-- Form -->
     <!-- <button class="btn-default btn" (click)= "login()">Login to see other weeks</button> -->
 

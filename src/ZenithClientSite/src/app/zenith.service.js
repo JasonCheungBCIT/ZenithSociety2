@@ -41,7 +41,7 @@ var ZenithService = (function () {
         return this.http
             .post(this.BASE_URL + '/connect/register', body, { headers: headers3 })
             .toPromise()
-            .then(function (response) { return response.json(); })
+            .then(function (response) { return response; })
             .catch(this.handleError);
     };
     ZenithService.prototype.getNewWeek = function (token, num) {
