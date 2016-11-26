@@ -57,10 +57,10 @@ namespace ZenithWebsite
             }
 
             // If we got this far, something failed
-            return View("Error", new ErrorViewModel
+            return BadRequest(new OpenIdConnectResponse
             {
-                Error = OpenIdConnectConstants.Errors.ServerError,
-                ErrorDescription = "An internal error has occurred - please check your form data."
+                Error = OpenIdConnectConstants.Errors.InvalidRequest,
+                ErrorDescription = "Error with registration form data."
             });
         }
 
