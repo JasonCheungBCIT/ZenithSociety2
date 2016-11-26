@@ -147,8 +147,11 @@ namespace ZenithWebsite
 
         [HttpPost("~/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange(OpenIdConnectRequest request) {
+
             if (request.IsPasswordGrantType()) {
+
                 var user = await _userManager.FindByNameAsync(request.Username);
+
                 if (user == null) {
                     return BadRequest(new OpenIdConnectResponse {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
@@ -194,6 +197,16 @@ namespace ZenithWebsite
 
                 if (_userManager.SupportsUserLockout) {
                     await _userManager.ResetAccessFailedCountAsync(user);
+                }
+
+                if (!(_userManager.IsInRoleAsync(user, "Admin").Result
+                    && _userManager.IsInRoleAsync(user, "Member").Result))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The user is not an admin or member."
+                    });
                 }
 
                 // Create a new authentication ticket.
