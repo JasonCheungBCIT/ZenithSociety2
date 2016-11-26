@@ -93,13 +93,16 @@ export class AppComponent implements OnInit {
 
   onRoleResult(result: string[]){
     console.log(result["value"]);
-    // this.enableBtn = result["value"] == "true" ? true : false;
-    if(result["value"] == true){
-      this.enableBtn = true;
-    }
+    this.enableBtn = result["value"] == "true" ? true : false;
+    // if(result["value"] == true){
+    //   this.enableBtn = true;
+    // }
     console.log(typeof this.enableBtn);
   }
 
+  isButtonsEnabled(): Boolean {
+    return this.enableBtn;
+  }
 
   reformatData(data: Events[]) {
     //console.log(data);
