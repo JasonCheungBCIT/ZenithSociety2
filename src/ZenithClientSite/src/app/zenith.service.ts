@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Events} from './events';
 import {Token} from './token';
+import {NewUser} from './new-user';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class ZenithService {
@@ -29,6 +30,18 @@ export class ZenithService {
       .post(this.BASE_URL + '/connect/token', body, { headers: headers3 })
       .toPromise()
       .then(response => response.json() as Token)
+      .catch(this.handleError);
+  }
+  register(newUser: NewUser): Promise<string[]> {
+    //var body = 'username='+username+'&password='+password;
+    var body = "Username=" + newUser.Username +"&FirstName="+newUser.FirstName + "&LastName=" + newUser.LastName + "&Email=" + newUser.Email + "&Password="+ newUser.Password + "&ConfirmPassword=" + newUser.ConfirmPassword;
+    var headers3 = new Headers();
+    headers3.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http
+      .post(this.BASE_URL + '/connect/register', body, { headers: headers3 })
+      .toPromise()
+      .then(response => response.json() as string[])
       .catch(this.handleError);
   }
 
