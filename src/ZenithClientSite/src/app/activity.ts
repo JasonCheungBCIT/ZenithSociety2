@@ -3,3 +3,4 @@ export class Activity {
   activityDescription: string;
   creationDate: string;
 }
+  

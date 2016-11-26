@@ -31,22 +31,20 @@ namespace ZenithWebsite.Controllers
         {
             var @events = _context.Event.Include(that => that.Activity).OrderBy(s => s.FromDate);
 
-            //Dictionary<String, List<Event>> Week = new Dictionary<String, List<Event>>();
             List<Event> Week = new List<Event>();
+
             //Find the monday of this week
             DateTime today = DateTime.Now;
-            int delta = DayOfWeek.Monday - today.DayOfWeek;
-            if (delta > 0)
-            {
-                delta -= 7;
-            }
-                
-            DateTime monday = today.AddDays(delta);
-            DateTime sunday = monday.AddDays(6);
+            int deltaToMonday = DayOfWeek.Monday - today.DayOfWeek;
+            if (deltaToMonday > 0)
+                deltaToMonday -= 7; // Always get this weeks dates
+
+            DateTime monday = today.Date.AddDays(deltaToMonday);
+            DateTime nextMonday = monday.AddDays(7);
 
             foreach (var item in @events)
             {
-                if (item.FromDate >= monday && item.FromDate <= sunday)
+                if (item.FromDate >= monday && item.FromDate < nextMonday)
                 {
                     if (item.IsActive)
                     {
@@ -55,7 +53,7 @@ namespace ZenithWebsite.Controllers
 
                 }
             }
-            
+
             return Week;
         }
 
@@ -66,20 +64,22 @@ namespace ZenithWebsite.Controllers
         {
             var @events = _context.Event.Include(that => that.Activity).OrderBy(s => s.FromDate);
 
-            //Dictionary<String, List<Event>> Week = new Dictionary<String, List<Event>>();
             List<Event> Week = new List<Event>();
+
             //Find the monday of this week
-            int WeekOffset = (7 * id);
-            DateTime today = DateTime.Now.AddDays(WeekOffset);
-            int delta = DayOfWeek.Monday - (today.DayOfWeek);
-            if (delta > 0) { delta -= 7; }
-                
-            DateTime monday = today.AddDays(delta);
-            DateTime sunday = monday.AddDays(7);
+            DateTime today = DateTime.Now;
+            int deltaToMonday = DayOfWeek.Monday - today.DayOfWeek;
+            if (deltaToMonday > 0)
+                deltaToMonday -= 7; // Always get this weeks dates
+
+            int weekOffset = id * 7;
+
+            DateTime monday = today.Date.AddDays(deltaToMonday + weekOffset);
+            DateTime nextMonday = monday.AddDays(7);
 
             foreach (var item in @events)
             {
-                if (item.FromDate >= monday && item.FromDate < sunday)
+                if (item.FromDate >= monday && item.FromDate < nextMonday)
                 {
                     if (item.IsActive)
                     {

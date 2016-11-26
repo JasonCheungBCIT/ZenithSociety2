@@ -27,15 +27,15 @@ namespace ZenithWebsite.Controllers
 
             //Find the monday of this week
             DateTime today = DateTime.Now;
-            int delta = DayOfWeek.Monday - today.DayOfWeek;
-            if (delta > 0)
-                delta -= 7;
-            DateTime monday = today.AddDays(delta);
+            int deltaToMonday = DayOfWeek.Monday - today.DayOfWeek;
+            if (deltaToMonday > 0)
+                deltaToMonday -= 7; // Always get this weeks dates
+            DateTime monday = today.Date.AddDays(deltaToMonday);
+            DateTime nextMonday = monday.AddDays(7);
             ViewBag.StartOfWeek = monday.ToString(LONG_DATE_FORMAT);
-            DateTime sunday = monday.AddDays(7);
 
             //Allow only days this week
-            var daysOfTheWeek = @event.Where(e => e.FromDate >= monday && e.FromDate < sunday);
+            var daysOfTheWeek = @event.Where(e => e.FromDate >= monday && e.FromDate < nextMonday);
 
             //add to dictionary
             foreach (var e in daysOfTheWeek.OrderBy(name => name.FromDate).ToList())

@@ -5,58 +5,96 @@
 
   <!-- Table with event -->
   <div class="container text-center">
+    <!-- SHOW LOGIN BUTTON -->
+    <button id="login" *ngIf="!showLogin && !showRegister" class="btn-success btn" (click)="showLogin = true">Login to see other weeks</button>
+    <!-- LOGIN  -->
     <div id="backgroundGroup" *ngIf="showLogin">
+      <!-- login form -->
       <div *ngIf="!token">
         <h1>Login</h1>
         <div class="form-inline">
-          <label >Username:</label>
           <input class="form-control" type="text" placeholder="Username" [(ngModel)]="user.username">
         </div>
         <div class="form-inline">
-          <label >Password:</label>
           <input class="form-control" type="password" placeholder="Password" [(ngModel)]="user.password">
         </div>
-        <div *ngIf="(!token)&& fail == true">
-          <h5 id="text-danger">Authentication Failed, please try again</h5>
+        <div *ngIf="errorBool">
+          <h5 id="text-danger">{{error}}</h5>
         </div>
-        <button class="btn btn-success" (click)="verify()" type="button" name="button">Login</button>
+        <button class="btn btn-success" (click)="verify(user.username, user.password)" type="button" name="button">Login</button>
+        <button class="btn btn-danger" (click)="showLogin = false" type="button" name="button">Close</button>
+        <button class="btn btn-default" (click)="showLogin = false; showRegister = true;errorBool = false" type="button" name="button">Register</button>
+
       </div>
       <div *ngIf="token" class="form-inline">
-        <button class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button class="form-control" (click)="getNextWeek(1)">></button>
+        <button [disabled]="!isButtonsEnabled()" class="form-control" (click)="getNextWeek(-1)"><</button>
+        <label class="form-control">View Weeks</label>
+        <button [disabled]="!isButtonsEnabled()" class="form-control" (click)="getNextWeek(1)">></button>
+      </div>
+    </div>
+    <!-- END LOGIN -->
+
+    <!-- REGISTER -->
+    <div class="container" id="backgroundGroup" *ngIf="showRegister">
+      <!-- REGISTER FORM -->
+      <div *ngIf="!token" >
+
+        <h1>Register</h1>
+        <div class="form-inline">
+          <input class="form-control" type="text" placeholder="Username" [(ngModel)]="newUser.Username">
+        </div>
+        <div class="form-inline">
+          <input class="form-control" type="text" placeholder="First name" [(ngModel)]="newUser.FirstName">
+        </div>
+        <div class="form-inline">
+          <input class="form-control" type="text" placeholder="Last name" [(ngModel)]="newUser.LastName">
+        </div>
+        <div class="form-inline">
+          <input class="form-control" type="email" placeholder="Email" [(ngModel)]="newUser.Email">
+        </div>
+        <div class="form-inline">
+          <input class="form-control" type="password" placeholder="Password" [(ngModel)]="newUser.Password">
+        </div>
+        <div class="form-inline">
+          <input class="form-control" type="password" placeholder="Confirm Password" [(ngModel)]="newUser.ConfirmPassword">
+        </div>
+        <div *ngIf="errorBool">
+          <h5 id="text-danger">{{error}}</h5>
+        </div>
+
+        <button class="btn btn-success" (click)="register()" type="button" name="button">Register</button>
+        <button class="btn btn-danger" (click)="showRegister = false" type="button" name="button">Close</button>
+        <button class="btn btn-default" (click)="showRegister = false ; showLogin=true; errorBool = false" type="button" name="button">Login</button>
+
+      </div>
+
+      <div *ngIf="token" class="form-inline">
+        <button [disabled]="!isButtonsEnabled()" class="form-control" (click)="getNextWeek(-1)"><</button>
+        <label class="form-control">View Weeks</label>
+        <button [disabled]="!isButtonsEnabled()" class="form-control" (click)="getNextWeek(1)">></button>
       </div>
 
     </div>
 
-    <h1>Taken from
-      <strong>https://localhost:5000/api/EventsAPI</strong>
-    </h1>
-
-
-    <table class="table table-striped table-bordered" style="width: 50%; margin: auto;">
-      <tbody *ngFor="let key of eventsKeys;">
-        
-        <tr>
-          <td class="success" colspan="2">{{key}}</td>
-        </tr>
-
-        <div *ngFor="let event of eventsDictionary[key];">
-          
+    <div id="table">
+      <table id="table" class="table table-striped table-bordered" style="width: 50%; margin: auto;">
+        <tbody *ngFor="let key of eventsKeys;">
           <tr>
-            <td>{{event.fromDate | date: "shortTime"}}
-                -
-                {{event.toDate | date: "shortTime"}}</td>
-
-            <td>{{event.activity.activityDescription}}</td>
+            <td class="success" colspan="2">{{key}}</td>
           </tr>
-        
-        </div>
+          <tr *ngFor="let event of eventsDictionary[key];">
+            <td >{{event.fromDate+ "-08:00" | date: "h:mm a" }} - {{event.toDate + "-08:00"| date: "h:mm a"}}</td>
+            <td >{{event.activity.activityDescription}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      </tbody>
-    </table>
+    <div *ngIf="eventsKeys.length == 0">
+        <p>No events for this week</p>
+    </div>
     <!-- Form -->
     <!-- <button class="btn-default btn" (click)= "login()">Login to see other weeks</button> -->
-
-    <button id="login" *ngIf="!showLogin" class="btn-success btn" (click)="showLogin = true">Login to see other weeks</button>
 
   </div>
 

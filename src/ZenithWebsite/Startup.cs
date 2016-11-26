@@ -54,7 +54,8 @@ namespace ZenithWebsite
         public void ConfigureServices(IServiceCollection services)
         {
             //enable cors
-            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+            services.AddCors(options => options.AddPolicy("AllowAll",
+                                            p => p.AllowAnyOrigin()
                                                 .AllowAnyHeader()
                                                 .AllowAnyMethod()
                                                 .AllowCredentials()));

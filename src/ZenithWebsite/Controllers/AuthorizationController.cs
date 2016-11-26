@@ -18,6 +18,8 @@ using OpenIddict;
 using ZenithWebsite.Models;
 using ZenithWebsite.Helpers;
 using ZenithWebsite.Authorization;
+using ZenithWebsite.Models.AccountViewModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ZenithWebsite
 {
@@ -25,14 +27,45 @@ namespace ZenithWebsite
         private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AuthorizationController(
             OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager) {
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
+        {
             _applicationManager = applicationManager;
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        [HttpPost("~/connect/register")]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // Give the user a "member" role
+                    await this._userManager.AddToRoleAsync(user, "Member");
+                    // Return an OK message 
+                    return Ok(new JsonResult("Message: User registration successful")
+                    {
+                        StatusCode = 200
+                    });
+                }
+            }
+
+            // If we got this far, something failed
+            return BadRequest(new OpenIdConnectResponse
+            {
+                Error = OpenIdConnectConstants.Errors.InvalidRequest,
+                ErrorDescription = "Error with registration form data."
+            });
         }
 
         // Note: to support interactive flows like the code flow,
@@ -114,8 +147,11 @@ namespace ZenithWebsite
 
         [HttpPost("~/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange(OpenIdConnectRequest request) {
+
             if (request.IsPasswordGrantType()) {
+
                 var user = await _userManager.FindByNameAsync(request.Username);
+
                 if (user == null) {
                     return BadRequest(new OpenIdConnectResponse {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
@@ -163,6 +199,8 @@ namespace ZenithWebsite
                     await _userManager.ResetAccessFailedCountAsync(user);
                 }
 
+
+
                 // Create a new authentication ticket.
                 var ticket = await CreateTicketAsync(request, user);
 
@@ -173,6 +211,29 @@ namespace ZenithWebsite
                 Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
                 ErrorDescription = "The specified grant type is not supported."
             });
+        }
+
+        [Authorize]
+        [HttpGet("~/connect/roles"), Produces("application/json")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var user = await _userManager.FindByNameAsync( HttpContext.User.Identity.Name);
+
+            if (!(_userManager.IsInRoleAsync(user, "Admin").Result
+                && _userManager.IsInRoleAsync(user, "Member").Result))
+            {
+                return Ok(new JsonResult("false")
+                {
+                    StatusCode = 200
+                });
+            } 
+            else
+            {
+                return Ok(new JsonResult("true")
+                {
+                    StatusCode = 200
+                });
+            }
         }
 
         private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, ApplicationUser user) {

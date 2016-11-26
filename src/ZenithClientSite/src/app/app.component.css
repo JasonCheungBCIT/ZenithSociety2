@@ -2,11 +2,12 @@
   background-color: rgba(50,150,50,0.25);
   border-radius: 30px;
   padding: 30px;
-  margin-top: 30px;
   border: 10px double white;
+  width: 60%;
+  margin: auto;
 }
 button, label, input{
-  margin-bottom: 5px;
+  margin-top: 20px;
   text-align: center;
 }
 input{
@@ -20,5 +21,12 @@ h5{
   color: red;
 }
 #login{
-  margin-top: 15px;
+  margin-bottom: 30px;
+}
+#table{
+  margin-top: 40px;
+}
+body{
+  padding-top: 50px;
+  padding-bottom: 30px;
 }
