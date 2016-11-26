@@ -54,6 +54,16 @@ var ZenithService = (function () {
             .then(function (response) { return response.json(); })
             .catch(this.handleError);
     };
+    ZenithService.prototype.getRolePermission = function (token) {
+        var body = '';
+        var headers2 = new http_1.Headers({ 'Accept': 'application/json' });
+        headers2.append('Authorization', 'Bearer ' + token);
+        var options = new http_1.RequestOptions({ headers: headers2 });
+        return this.http.get(this.BASE_URL + '/connect/roles', options)
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
+    };
     ZenithService.prototype.handleError = function (error) {
         console.error('An error occurred', error);
         return Promise.reject(error.message || error);
