@@ -214,22 +214,22 @@ namespace ZenithWebsite
         }
 
         [Authorize]
-        [HttpPost("~/connect/roles"), Produces("application/json")]
-        public async Task<IActionResult> GetRoles(OpenIdConnectRequest request)
+        [HttpGet("~/connect/roles"), Produces("application/json")]
+        public async Task<IActionResult> GetRoles()
         {
-            var user = await _userManager.FindByIdAsync( HttpContext.User.Identity.Name);
+            var user = await _userManager.FindByNameAsync( HttpContext.User.Identity.Name);
 
             if (!(_userManager.IsInRoleAsync(user, "Admin").Result
                 && _userManager.IsInRoleAsync(user, "Member").Result))
             {
-                return Ok(new JsonResult("privileged: false")
+                return Ok(new JsonResult("false")
                 {
                     StatusCode = 200
                 });
             } 
             else
             {
-                return Ok(new JsonResult("privileged: true")
+                return Ok(new JsonResult("true")
                 {
                     StatusCode = 200
                 });
