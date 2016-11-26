@@ -75,6 +75,7 @@ namespace ZenithWebsite.Controllers
             int weekOffset = id * 7;
 
             DateTime monday = today.Date.AddDays(deltaToMonday + weekOffset);
+            DateTime nextMonday = monday.AddDays(7);
 
             foreach (var item in @events)
             {
