@@ -21,9 +21,9 @@ export class AppComponent implements OnInit {
   showLogin = false;
   fail = false;
 
-  eventsKeys: string[] = [];                          // array of keys in the eventsDictionary 
+  eventsKeys: string[] = [];                          // array of keys in the eventsDictionary
   eventsDictionary: { [key: string]: Events[] } = {}; // [ Day => Event ]
-  
+
   constructor(private ZenithService: ZenithService) { }
 
   getEvents(): void {
@@ -31,26 +31,31 @@ export class AppComponent implements OnInit {
   }
   getNextWeek(num: number): void {
     console.log("Get next week");
+    this.eventsKeys = [];
+    this.eventsDictionary = {};
     this.count += num;
     this.ZenithService.getNewWeek(this.token.access_token, this.count)
       .then(events => this.reformatData(events))
   }
 
   reformatData(data: Events[]) {
-    console.log(data);
-    console.log(data[0]);
+    //console.log(data);
+    //console.log(data[0]);
     for (let e of data) {
-      console.log(e);
-      let day = new Date(e.fromDate)
-      let dayKey = day.toDateString();
-      
+      //console.log(e);
+      let fromDate = new Date(e.fromDate);
+      let toDate = new Date(e.toDate);
+
+      // reformat data
+      let dayKey = fromDate.toDateString();
+    
       if (!this.eventsKeys.find(s => s == dayKey))
         this.eventsKeys.push(dayKey);
-      // Create or push 
+      // Create or push
       (this.eventsDictionary[dayKey] = this.eventsDictionary[dayKey] ? this.eventsDictionary[dayKey] : []).push(e);
     }
 
-    console.log(this.eventsKeys)
+    //console.log(this.eventsKeys)
     console.log(this.eventsDictionary);
   }
 
@@ -59,9 +64,15 @@ export class AppComponent implements OnInit {
   }
 
   verify(): void {
-    this.ZenithService.getAPIToken(this.user.username, this.user.password).then(token => this.token = token)
-    if(!this.token){
-      this.fail = true;
-    }
+    this.ZenithService.getAPIToken(this.user.username, this.user.password).then(token => this.onVerifyResult(token))
+  }
+
+  onVerifyResult(token: Token) {
+        console.log(this.fail);
+        if(this.token){
+          this.fail = true;
+          console.log(this.fail);
+        }
+        this.token = token;
   }
 }

@@ -35,7 +35,7 @@ namespace ZenithWebsite.Controllers
             List<Event> Week = new List<Event>();
             //Find the monday of this week
             DateTime today = DateTime.Now;
-            int delta = DayOfWeek.Monday - today.DayOfWeek;
+            int delta = DayOfWeek.Monday - (today.DayOfWeek);
             if (delta > 0)
             {
                 delta -= 7;
@@ -70,7 +70,10 @@ namespace ZenithWebsite.Controllers
             List<Event> Week = new List<Event>();
             //Find the monday of this week
             int WeekOffset = (7 * id);
-            DateTime today = DateTime.Now.AddDays(WeekOffset);
+            DateTime today = DateTime.Now;
+            //if (id != 0) {
+            //    today = DateTime.Now.AddDays(WeekOffset);
+            //}
             int delta = DayOfWeek.Monday - (today.DayOfWeek);
             if (delta > 0) { delta -= 7; }
                 

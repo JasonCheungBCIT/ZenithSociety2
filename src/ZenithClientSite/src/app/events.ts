@@ -2,8 +2,8 @@ import {Activity} from './activity';
 
 export class Events {
   eventId:number;
-  fromDate:Date;
-  toDate:Date;
+  fromDate:string;
+  toDate:string;
   isActive:boolean;
   createdBy:string;
   creationDate: string;
