@@ -52,7 +52,11 @@ namespace ZenithWebsite
                 {
                     // Give the user a "member" role
                     await this._userManager.AddToRoleAsync(user, "Member");
-                    return Ok();
+                    // Return an OK message 
+                    return Ok(new JsonResult("Message: User registration successful")
+                    {
+                        StatusCode = 200
+                    });
                 }
             }
 

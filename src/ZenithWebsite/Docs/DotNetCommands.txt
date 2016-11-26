@@ -15,3 +15,6 @@ dotnet ef database update --context ApplicationDbContext
 
 // Run migrations and seed data for Zenith models 
 dotnet ef database update --context ZenithContext 
+
+// Run migrations for api authentication
+dotnet ef database update --context ApplicationDbContextIdentitySnapshot

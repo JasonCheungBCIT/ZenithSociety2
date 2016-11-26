@@ -5,6 +5,8 @@ import {ZenithService} from './zenith.service';
 import {Users} from './Users';
 import {NewUser} from './new-user';
 import {Token} from './token';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 @Component({
   selector: 'app-root',
@@ -67,17 +69,30 @@ export class AppComponent implements OnInit {
   }
 
   verify(): void {
-    this.ZenithService.getAPIToken(this.user.username, this.user.password).then(token => this.onVerifyResult(token))
+    this.ZenithService
+      .getAPIToken(this.user.username, this.user.password)
+      .then(token => this.onVerifyResult(token))
   }
 
   register(): void{
-    this.ZenithService.register(this.newUser).then(response =>this.checkReturn(response))
-
+    this.ZenithService
+      .register(this.newUser)
+      .then(response => this.onRegisterResult(response))
+      .catch(this.handleRegisterError);
   }
 
-  checkReturn(response: string[]){
-    console.log("Hello");
-    console.log(response);
+  handleRegisterError(error: any): Promise<any> {
+    console.log("Handle register error");
+    return Promise.reject(error.message || error);
+  }
+
+  onRegisterResult(response: string[]){
+    console.log("User registration OK");
+  }
+
+  handleVerifyResult(error: any): Promise<any> {
+    console.log("Handle verify error");
+    return Promise.reject(error.messge || error);
   }
 
   onVerifyResult(token: Token) {
