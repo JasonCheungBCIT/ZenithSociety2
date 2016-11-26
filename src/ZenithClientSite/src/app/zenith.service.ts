@@ -66,7 +66,7 @@ export class ZenithService {
     //headers2.append('Content-Type', 'application/json')
     let options = new RequestOptions({ headers: headers2 });
 
-    return this.http.get(this.BASE_URL + '/connect/roles ,options')
+    return this.http.get(this.BASE_URL + '/connect/roles' ,options)
       .toPromise()
       .then(response => response.json() as string[])
       .catch(this.handleError);  }

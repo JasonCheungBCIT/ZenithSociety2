@@ -88,7 +88,6 @@ export class AppComponent implements OnInit {
           .getRolePermission(this.token.access_token)
           .then(result => this.onRoleResult(result))
           .catch(error => this.handleRegisterError(error))
-
   }
 
   onRoleResult(result: string[]){

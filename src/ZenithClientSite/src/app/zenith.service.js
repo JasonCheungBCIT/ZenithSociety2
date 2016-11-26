@@ -59,7 +59,7 @@ var ZenithService = (function () {
         var headers2 = new http_1.Headers({ 'Accept': 'application/json' });
         headers2.append('Authorization', 'Bearer ' + token);
         var options = new http_1.RequestOptions({ headers: headers2 });
-        return this.http.get(this.BASE_URL + '/connect/roles ,options')
+        return this.http.get(this.BASE_URL + '/connect/roles', options)
             .toPromise()
             .then(function (response) { return response.json(); })
             .catch(this.handleError);
