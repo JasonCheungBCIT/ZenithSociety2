@@ -12,6 +12,8 @@ var core_1 = require("@angular/core");
 var zenith_service_1 = require("./zenith.service");
 var Users_1 = require("./Users");
 var new_user_1 = require("./new-user");
+require("rxjs/add/operator/map");
+require("rxjs/add/operator/toPromise");
 var AppComponent = (function () {
     function AppComponent(ZenithService) {
         this.ZenithService = ZenithService;
@@ -22,6 +24,8 @@ var AppComponent = (function () {
         this.showLogin = false;
         this.showRegister = false;
         this.fail = false;
+        this.error = "";
+        this.errorBool = false;
         this.what = [];
         this.eventsKeys = [];
         this.eventsDictionary = {};
@@ -58,17 +62,32 @@ var AppComponent = (function () {
     AppComponent.prototype.ngOnInit = function () {
         this.getEvents();
     };
-    AppComponent.prototype.verify = function () {
+    AppComponent.prototype.verify = function (username, password) {
         var _this = this;
-        this.ZenithService.getAPIToken(this.user.username, this.user.password).then(function (token) { return _this.onVerifyResult(token); });
+        this.ZenithService
+            .getAPIToken(username, password)
+            .then(function (token) { return _this.onVerifyResult(token); })
+            .catch(function (error) { return _this.handleRegisterError(error); });
     };
     AppComponent.prototype.register = function () {
         var _this = this;
-        this.ZenithService.register(this.newUser).then(function (response) { return _this.checkReturn(response); });
+        this.ZenithService
+            .register(this.newUser)
+            .then(function (response) { return _this.onRegisterResult(response); })
+            .catch(function (error) { return _this.handleRegisterError(error); });
     };
-    AppComponent.prototype.checkReturn = function (response) {
-        console.log("Hello");
-        console.log(response);
+    AppComponent.prototype.onRegisterResult = function (newUser) {
+        console.log(this.newUser.FirstName);
+        this.verify(this.newUser.Username, this.newUser.Password);
+    };
+    AppComponent.prototype.handleRegisterError = function (error) {
+        console.log(error);
+        this.errorBool = true;
+        this.error = "Attempt Failed, Please Try Again!";
+    };
+    AppComponent.prototype.handleVerifyResult = function (error) {
+        console.log("Handle verify error");
+        return Promise.reject(error.messge || error);
     };
     AppComponent.prototype.onVerifyResult = function (token) {
         console.log(this.fail);

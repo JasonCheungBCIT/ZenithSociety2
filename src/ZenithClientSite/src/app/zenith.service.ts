@@ -41,7 +41,7 @@ export class ZenithService {
     return this.http
       .post(this.BASE_URL + '/connect/register', body, { headers: headers3 })
       .toPromise()
-      .then(response => response.json() as string[])
+      .then(response => response)
       .catch(this.handleError);
   }
 

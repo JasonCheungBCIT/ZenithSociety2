@@ -2,9 +2,9 @@
   background-color: rgba(50,150,50,0.25);
   border-radius: 30px;
   padding: 30px;
-  margin-top: 30px;
-  margin-bottom: 30px;
   border: 10px double white;
+  width: 60%;
+  margin: auto;
 }
 button, label, input{
   margin-top: 20px;
@@ -22,6 +22,9 @@ h5{
 }
 #login{
   margin-bottom: 30px;
+}
+#table{
+  margin-top: 40px;
 }
 body{
   padding-top: 50px;
