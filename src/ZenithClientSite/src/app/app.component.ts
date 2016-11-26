@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
   what : string[] = [];
   eventsKeys: string[] = [];                          // array of keys in the eventsDictionary
   eventsDictionary: { [key: string]: Events[] } = {}; // [ Day => Event ]
-  enableBtn = false;
+  enableBtn:Boolean = false;
 
   constructor(private ZenithService: ZenithService) { }
 
@@ -93,8 +93,13 @@ export class AppComponent implements OnInit {
 
   onRoleResult(result: string[]){
     console.log(result["value"]);
-    this.enableBtn = result["value"];
+    // this.enableBtn = result["value"] == "true" ? true : false;
+    if(result["value"] == true){
+      this.enableBtn = true;
+    }
+    console.log(typeof this.enableBtn);
   }
+
 
   reformatData(data: Events[]) {
     //console.log(data);

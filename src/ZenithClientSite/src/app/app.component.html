@@ -27,7 +27,14 @@
 
       </div>
       <div *ngIf="token" class="form-inline">
-        <button [disabled]="!enabledBtn" class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button [disabled]="!enabledBtn" class="form-control" (click)="getNextWeek(1)">></button>
+        <div *ngIf="enabledBtn">
+          <p>DEbug</p>
+          <button class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button class="form-control" (click)="getNextWeek(1)">></button>
+        </div>
+        <div *ngIf="!enabledBtn">
+          <p>!DEbug</p>          
+          <button disabled class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button disabled class="form-control" (click)="getNextWeek(1)">></button>
+        </div>
       </div>
     </div>
     <!-- END LOGIN -->
@@ -66,7 +73,12 @@
 
       </div>
       <div *ngIf="token" class="form-inline">
-        <button [disabled]="!enabledBtn" class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button [disabled]="!enabledBtn" class="form-control" (click)="getNextWeek(1)">></button>
+        <div *ngIf="enabledBtn">
+          <button class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button class="form-control" (click)="getNextWeek(1)">></button>
+        </div>
+        <div *ngIf="!enabledBtn">
+          <button disabled class="form-control" (click)="getNextWeek(-1)"><</button><label class="form-control">View Weeks</label><button disabled class="form-control" (click)="getNextWeek(1)">></button>
+        </div>
       </div>
 
     </div>
