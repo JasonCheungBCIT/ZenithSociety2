@@ -43,22 +43,6 @@ var AppComponent = (function () {
         this.ZenithService.getNewWeek(this.token.access_token, this.count)
             .then(function (events) { return _this.reformatData(events); });
     };
-    AppComponent.prototype.reformatData = function (data) {
-        var _loop_1 = function (e) {
-            var fromDate = new Date(e.fromDate);
-            var toDate = new Date(e.toDate);
-            var dayKey = fromDate.toDateString();
-            if (!this_1.eventsKeys.find(function (s) { return s == dayKey; }))
-                this_1.eventsKeys.push(dayKey);
-            (this_1.eventsDictionary[dayKey] = this_1.eventsDictionary[dayKey] ? this_1.eventsDictionary[dayKey] : []).push(e);
-        };
-        var this_1 = this;
-        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-            var e = data_1[_i];
-            _loop_1(e);
-        }
-        console.log(this.eventsDictionary);
-    };
     AppComponent.prototype.ngOnInit = function () {
         this.getEvents();
     };
@@ -85,17 +69,32 @@ var AppComponent = (function () {
         this.errorBool = true;
         this.error = "Attempt Failed, Please Try Again!";
     };
-    AppComponent.prototype.handleVerifyResult = function (error) {
-        console.log("Handle verify error");
-        return Promise.reject(error.messge || error);
-    };
     AppComponent.prototype.onVerifyResult = function (token) {
-        console.log(this.fail);
-        if (this.token) {
-            this.fail = true;
-            console.log(this.fail);
-        }
+        var _this = this;
         this.token = token;
+        this.ZenithService
+            .getRolePermission(this.token.access_token)
+            .then(function (result) { return _this.onRoleResult(result); })
+            .catch(function (error) { return _this.handleRegisterError(error); });
+    };
+    AppComponent.prototype.onRoleResult = function (result) {
+        console.log(result);
+    };
+    AppComponent.prototype.reformatData = function (data) {
+        var _loop_1 = function (e) {
+            var fromDate = new Date(e.fromDate);
+            var toDate = new Date(e.toDate);
+            var dayKey = fromDate.toDateString();
+            if (!this_1.eventsKeys.find(function (s) { return s == dayKey; }))
+                this_1.eventsKeys.push(dayKey);
+            (this_1.eventsDictionary[dayKey] = this_1.eventsDictionary[dayKey] ? this_1.eventsDictionary[dayKey] : []).push(e);
+        };
+        var this_1 = this;
+        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+            var e = data_1[_i];
+            _loop_1(e);
+        }
+        console.log(this.eventsDictionary);
     };
     return AppComponent;
 }());
