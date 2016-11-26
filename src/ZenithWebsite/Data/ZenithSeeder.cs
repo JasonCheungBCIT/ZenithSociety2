@@ -49,67 +49,54 @@ namespace ZenithWebsite.Data
 
         private static List<Event> getEvents(ZenithContext db)
         {
+            Random rand = new Random();
+            string[] randomNames = { "Amanda", "Bob", "Charles", "Dick", "Elaine", "Ford", "Zenith" };
+
+            // Base values 
+            var startDate = new DateTime(2016, 11, 1, 0, 0, 0);
+            var idCounter = 1;
+            var dayCounter = 1;
+
+            // Return value 
             List<Event> events = new List<Event>();
-            var e = new Event()
+
+            for (int i = 0; i < 50; i++)
             {
-                EventId = 1,
-                FromDate = new DateTime(2016, 11, 25, 19, 0, 0),
-                ToDate = new DateTime(2016, 11, 25, 20, 0, 0),
-                CreatedBy = "Amanda",
-                IsActive = true,
-                CreationDate = new DateTime(2016, 11, 4, 12, 0, 0),
-                Activity = db.Activity.First(a => a.ActivityId == 1)
-            };
-            events.Add(new Event()
-            {
-                EventId = 1,
-                FromDate = new DateTime(2016, 11, 24, 19, 0, 0),
-                ToDate = new DateTime(2016, 11, 24, 20, 0, 0),
-                CreatedBy = "Amanda",
-                IsActive = true,
-                CreationDate = new DateTime(2016, 11, 4, 12, 0, 0),
-                Activity = db.Activity.First(a => a.ActivityId == 1)
-            });
-            events.Add(new Event()
-            {
-                EventId = 2,
-                FromDate = new DateTime(2016, 11, 24, 10, 30, 0),
-                ToDate = new DateTime(2016, 11, 24, 12, 0, 0),
-                CreatedBy = "Bob",
-                IsActive = false,
-                CreationDate = new DateTime(2016, 11, 5, 12, 0, 0),
-                Activity = db.Activity.First(a => a.ActivityId == 2)
-            });
-            events.Add(new Event()
-            {
-                EventId = 3,
-                FromDate = new DateTime(2016, 12, 20, 10, 30, 0),
-                ToDate = new DateTime(2016, 12, 20, 12, 0, 0),
-                CreatedBy = "Coot",
-                IsActive = true,
-                CreationDate = new DateTime(2016, 11, 6, 12, 0, 0),
-                Activity = db.Activity.First(a => a.ActivityId == 3)
-            });
-            events.Add(new Event()
-            {
-                EventId = 4,
-                FromDate = new DateTime(2016, 11, 27, 10, 30, 0),
-                ToDate = new DateTime(2016, 11, 27, 12, 0, 0),
-                CreatedBy = "Coot",
-                IsActive = true,
-                CreationDate = new DateTime(2016, 11, 6, 12, 0, 0),
-                Activity = db.Activity.First(a => a.ActivityId == 1)
-            });
-            events.Add(new Event()
-            {
-                EventId = 5,
-                FromDate = new DateTime(2016, 11, 28, 10, 30, 0),
-                ToDate = new DateTime(2016, 11, 28, 12, 0, 0),
-                CreatedBy = "Bob",
-                IsActive = true,
-                CreationDate = new DateTime(2016, 10, 20, 12, 0, 0),
-                Activity = db.Activity.First(a => a.ActivityId == 2)
-            });
+                idCounter += 1;
+                dayCounter += rand.Next(4); // 0-3
+
+                var newStartDate = startDate.AddDays(dayCounter);
+                newStartDate = newStartDate.AddHours(rand.Next(23));
+                newStartDate = newStartDate.AddMinutes(rand.Next(60));
+
+                var newEndDate = new DateTime(
+                    newStartDate.Year, 
+                    newStartDate.Month, 
+                    newStartDate.Day, 
+                    newStartDate.Hour + 1, 
+                    newStartDate.Minute,
+                    newStartDate.Second
+                );
+
+                var randomName = randomNames[rand.Next(randomNames.Length)];
+
+                var randomActive = rand.Next(2) == 1 ? true : false;
+
+                var randomActivityId = rand.Next(1, 4);
+
+                var newEvent = new Event()
+                {
+                    EventId = idCounter,
+                    FromDate = newStartDate,
+                    ToDate = newEndDate,
+                    CreatedBy = randomName,
+                    IsActive = randomActive,
+                    CreationDate = newStartDate,
+                    Activity = db.Activity.First(a => a.ActivityId == randomActivityId)
+                };
+
+                events.Add(newEvent);
+            }
 
             return events;
         }
