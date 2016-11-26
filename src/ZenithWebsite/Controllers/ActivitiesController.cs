@@ -59,6 +59,13 @@ namespace ZenithWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check for existing value 
+                if (ActivityExists(activity.ActivityDescription))
+                {
+                    ModelState.AddModelError(string.Empty, "An existing activity was found.");
+                    return View(activity);
+                }
+
                 // Add additional data
                 activity.CreationDate = DateTime.Now;
                 // Save
@@ -101,6 +108,13 @@ namespace ZenithWebsite.Controllers
             {
                 try
                 {
+                    // Check for existing value 
+                    if (ActivityExists(activity.ActivityDescription))
+                    {
+                        ModelState.AddModelError(string.Empty, "An existing activity was found.");
+                        return View(activity);
+                    }
+
                     _context.Entry(activity).State = EntityState.Modified;
                     //_context.Update(activity);
                     await _context.SaveChangesAsync();
@@ -152,6 +166,11 @@ namespace ZenithWebsite.Controllers
         private bool ActivityExists(int id)
         {
             return _context.Activity.Any(e => e.ActivityId == id);
+        }
+
+        private bool ActivityExists(string description)
+        {
+            return _context.Activity.Any(a => a.ActivityDescription.ToLower() == description.ToLower());
         }
     }
 }
