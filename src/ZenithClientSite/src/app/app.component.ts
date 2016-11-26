@@ -3,6 +3,7 @@ import {Events} from './events';
 import {Activity} from './activity';
 import {ZenithService} from './zenith.service';
 import {Users} from './Users';
+import {NewUser} from './new-user';
 import {Token} from './token';
 
 @Component({
@@ -16,11 +17,13 @@ export class AppComponent implements OnInit {
 
   events: Events[];
   user: Users = new Users();
+  newUser: NewUser = new NewUser();
   token: Token;
   count: number = 0;
   showLogin = false;
+  showRegister = false;
   fail = false;
-
+  what : string[] = [];
   eventsKeys: string[] = [];                          // array of keys in the eventsDictionary
   eventsDictionary: { [key: string]: Events[] } = {}; // [ Day => Event ]
 
@@ -48,7 +51,7 @@ export class AppComponent implements OnInit {
 
       // reformat data
       let dayKey = fromDate.toDateString();
-    
+
       if (!this.eventsKeys.find(s => s == dayKey))
         this.eventsKeys.push(dayKey);
       // Create or push
@@ -65,6 +68,16 @@ export class AppComponent implements OnInit {
 
   verify(): void {
     this.ZenithService.getAPIToken(this.user.username, this.user.password).then(token => this.onVerifyResult(token))
+  }
+
+  register(): void{
+    this.ZenithService.register(this.newUser).then(response =>this.checkReturn(response))
+
+  }
+
+  checkReturn(response: string[]){
+    console.log("Hello");
+    console.log(response);
   }
 
   onVerifyResult(token: Token) {
