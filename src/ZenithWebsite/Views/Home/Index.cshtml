@@ -5,6 +5,12 @@
 <div class="text-center container">
 
     <h2>Events for the Week of @ViewBag.StartOfWeek</h2>
+
+    @if (ViewBag.Week.Count == 0)
+    {
+        <p>There are no events for this week.</p>
+    }
+
     <table class="table table-bordered ">
 
         @foreach (var date in ViewBag.Week)

@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ZenithWebsite.Data;
 using ZenithWebsite.Models.UserRolesViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZenithWebsite.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserRolesController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -74,20 +76,25 @@ namespace ZenithWebsite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddRole(string id, EditUserRoleViewModel viewModel)
         {
+
             if (ModelState.IsValid)
             {
                 var roleToAdd = viewModel.SelectedRole;
-                var user = await _userManager.FindByNameAsync(viewModel.Username);
+                var user = await _userManager.FindByNameAsync(id);
                 var result = await _userManager.AddToRoleAsync(user, roleToAdd);
 
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
                 }
-                // TODO: Add error message 
+                else
+                {
+                    AddErrors(result);
+                }
             }
 
             // If here, then error occured 
+            ViewData["AllRoles"] = new SelectList(_roleManager.Roles, "Name", "Name");
             return View(viewModel);
         }
 
@@ -117,6 +124,14 @@ namespace ZenithWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Fast exit if trying to modify user 'a' or role 'admin'
+                if (viewModel.Username == "a" && viewModel.SelectedRole.ToUpper() == "ADMIN")
+                {
+                    ModelState.AddModelError(string.Empty, "User 'a' cannot be removed from Admin");
+                    ViewData["AllRoles"] = new SelectList(_roleManager.Roles, "Name", "Name");
+                    return View(viewModel);
+                }
+
                 var roleToDelete = viewModel.SelectedRole;
                 var user = await _userManager.FindByNameAsync(viewModel.Username);
                 var result = await _userManager.RemoveFromRoleAsync(user, roleToDelete);
@@ -125,11 +140,23 @@ namespace ZenithWebsite.Controllers
                 {
                     return RedirectToAction("Index");
                 }
-                // TODO: Add error message 
+                else
+                {
+                    AddErrors(result);
+                }
             }
 
             // If here, then error occured 
+            ViewData["AllRoles"] = new SelectList(_roleManager.Roles, "Name", "Name");
             return View(viewModel);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
     }
 }

@@ -4,11 +4,10 @@
     ViewData["Title"] = "Add Role to User";
 }
 
-<h2>Edit</h2>
+<h2>@ViewData["Title"]</h2>
 
 <form asp-action="AddRole">
     <div class="form-horizontal">
-        <h4>Event</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Username" />
@@ -30,7 +29,7 @@
        
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Add" class="btn btn-default" />
             </div>
         </div>
     </div>

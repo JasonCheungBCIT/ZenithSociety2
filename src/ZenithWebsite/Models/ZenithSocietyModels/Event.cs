@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-// using ZenithDataLib.Models.CustomValidation;
+using ZenithWebsite.Models.CustomValidation;
 
 namespace ZenithWebsite.Models.ZenithSocietyModels
 {
@@ -16,17 +16,17 @@ namespace ZenithWebsite.Models.ZenithSocietyModels
         public int EventId { get; set; }
 
         [Required]
+        [AfterNow()]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")] // IMPORTANT: This MUST be in this format. Refer to notes.
-        // [AfterNow()]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MMMM dd, yyyy - h:mm tt}")] // IMPORTANT: This MUST be in this format. Refer to notes.
         [Display(Name = "From")]
         public DateTime FromDate { get; set; }
 
         [Required]
+        [AfterTime("FromDate")]
+        [SameDay("FromDate")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
-        // [GreaterThan("FromDate")] // Note: FoolProof Nuget
-        // [SameDay("FromDate")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MMMM dd, yyyy - h:mm tt}")]
         [Display(Name = "To")]
         public DateTime ToDate { get; set; }
 

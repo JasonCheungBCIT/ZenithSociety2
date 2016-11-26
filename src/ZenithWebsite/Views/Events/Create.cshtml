@@ -4,17 +4,18 @@
     ViewData["Title"] = "Create Event";
 }
 
-<h2>Create</h2>
+<h2>@ViewData["Title"]</h2>
 
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h4>Event</h4>
         <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="All" class="text text-danger"></div>
+        
         <div class="form-group">
             <label asp-for="ActivityId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="ActivityId" class ="form-control" asp-items="ViewBag.ActivityId"></select>
+                <select asp-for="ActivityId" class="form-control" asp-items="ViewBag.ActivityId"></select>
+                <span asp-validation-for="ActivityId" class="text-danger"></span>
             </div>
         </div>
 
@@ -28,10 +29,10 @@
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
-                <span asp-validation-for="FromDate" class="text-danger" />
+                <span asp-validation-for="FromDate" class="text-danger"></span>
             </div>
         </div>
-                        
+
         <div class="form-group">
             <label asp-for="ToDate" class="col-md-2 control-label"></label>
             <div class="col-md-10 input-width-limiter">
@@ -41,19 +42,17 @@
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
+                <span asp-validation-for="ToDate" class="text-danger"></span>
             </div>
-            <span asp-validation-for="ToDate" class="text-danger" />
         </div>
 
         <div class="form-group">
             <label asp-for="IsActive" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <div class="checkbox">
-                    <input asp-for="IsActive" />
-                </div>
+                <input asp-for="IsActive" class="checkbox" />
             </div>
         </div>
-        
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />

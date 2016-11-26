@@ -1,0 +1,24 @@
+#backgroundGroup{
+  background-color: rgba(50,150,50,0.25);
+  border-radius: 30px;
+  padding: 30px;
+  margin-top: 30px;
+  border: 10px double white;
+}
+button, label, input{
+  margin-bottom: 5px;
+  text-align: center;
+}
+input{
+  margin-left: 8px;
+  border-radius: 10px;
+}
+h5{
+  color: grey;
+}
+#text-danger{
+  color: red;
+}
+#login{
+  margin-top: 15px;
+}

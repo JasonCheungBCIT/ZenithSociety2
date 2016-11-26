@@ -4,13 +4,8 @@
     ViewData["Title"] = "User Roles";
 }
 
-<h2>Index</h2>
+<h2>@ViewData["Title"]</h2>
 
-<!-- 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
- -->
 <table class="table">
     <thead>
         <tr>
@@ -42,7 +37,7 @@
             </td>
             <td>
                 <a asp-action="AddRole" asp-route-id="@item.Username">Add Role</a> | 
-                <a asp-action="DeleteRole" asp-route-id="@item.Username">Delete Role</a>
+                <a asp-action="DeleteRole" asp-route-id="@item.Username">Remove Role</a>
             </td>
         </tr>
 }

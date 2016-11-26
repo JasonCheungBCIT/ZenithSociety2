@@ -11,6 +11,9 @@
 }
 
 /* Set widths on the form inputs since otherwise they're 100% wide */
+.input-width-limiter {
+    max-width: 310px;
+}
 input,
 select,
 textarea {

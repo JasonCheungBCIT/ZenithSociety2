@@ -13,6 +13,14 @@ using ZenithWebsite.Models;
 using ZenithWebsite.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using SimpleTokenProvider;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using OpenIddict;
+using CryptoHelper;
 
 namespace ZenithWebsite
 {
@@ -20,6 +28,8 @@ namespace ZenithWebsite
     {
         public Startup(IHostingEnvironment env)
         {
+            
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -30,7 +40,7 @@ namespace ZenithWebsite
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets();
 
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
+                //* This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
@@ -43,6 +53,26 @@ namespace ZenithWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //enable cors
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                                                .AllowAnyHeader()
+                                                .AllowAnyMethod()
+                                                .AllowCredentials()));
+
+
+            services.AddOpenIddict<ApplicationDbContext>()
+
+                        .AddMvcBinders()
+                        .EnableAuthorizationEndpoint("/connect/authorize")
+                        .EnableTokenEndpoint("/connect/token")
+                        .EnableLogoutEndpoint("/connect/logout")
+                        .AllowPasswordFlow()
+                        .AllowAuthorizationCodeFlow()
+                        .DisableHttpsRequirement()
+                        .AddEphemeralSigningKey();
+
+
+
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -77,6 +107,8 @@ namespace ZenithWebsite
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
+
+
             });
 
             services.AddMvc();
@@ -117,13 +149,99 @@ namespace ZenithWebsite
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            //Use the new policy globally
 
-            app.UseMvc(routes =>
+            app.UseCors("AllowAll");
+
+            app.UseOAuthValidation();
+
+            app.UseOpenIddict();
+
+
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseMvcWithDefaultRoute();
+
+
+            using ( context = new ApplicationDbContext(
+    app.ApplicationServices.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                context.Database.EnsureCreated();
+
+                if (!context.Applications.Any())
+                {
+                    context.Applications.Add(new OpenIddictApplication
+                    {
+                        // Assign a unique identifier to your client app:
+                        Id = "48BF1BC3-CE01-4787-BBF2-0426EAD21342",
+
+                        // Assign a display named used in the consent form page:
+                        DisplayName = "MVC Core client application",
+
+                        // Register the appropriate redirect_uri and post_logout_redirect_uri:
+                        RedirectUri = "http://localhost:53507/signin-oidc",
+                        LogoutRedirectUri = "http://localhost:53507/",
+                        ClientSecret = Crypto.HashPassword("secret_secret_secret"),
+
+                        // Note: use "public" for JS/mobile/desktop applications
+                        // and "confidential" for server-side applications.
+                        Type = OpenIddictConstants.ClientTypes.Confidential
+                    });
+
+                    context.SaveChanges();
+                }
+            }
+
+            //TRYING WEB API AUTH
+            // secretKey contains a secret passphrase only your server knows
+            string secretKey = "mysupersecret_secretkey!123";
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                // The signing key must match!
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                // Validate the JWT Issuer (iss) claim
+                ValidateIssuer = true,
+                ValidIssuer = "ExampleIssuer",
+
+                // Validate the JWT Audience (aud) claim
+                ValidateAudience = true,
+                ValidAudience = "ExampleAudience",
+
+                // Validate the token expiry
+                ValidateLifetime = true,
+
+                // If you want to allow a certain amount of clock drift, set that here:
+                ClockSkew = TimeSpan.Zero
+            };
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = tokenValidationParameters
             });
+
+            //TOKEN
+            // Add JWT generation endpoint:
+            var options = new TokenProviderOptions
+            {
+                Audience = "ExampleAudience",
+                Issuer = "ExampleIssuer",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+            };
+            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
+
+
+            //END OF AUTH TRIAL
 
             // Seed demo Activities and Events if they don't exist 
             ZenithSeeder.Seed(db);
@@ -189,5 +307,7 @@ namespace ZenithWebsite
                 }
             }
         }
+
+        
     }
 }
