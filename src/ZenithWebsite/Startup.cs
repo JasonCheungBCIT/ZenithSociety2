@@ -79,9 +79,9 @@ namespace ZenithWebsite
 
             // Database 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<ZenithContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             // Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
