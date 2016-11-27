@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using ZenithWebsite.Data;
 
-namespace ZenithWebsite.Migrations
+namespace ZenithWebsite.Data.Migrations
 {
     [DbContext(typeof(ZenithContext))]
     [Migration("20161119082850_CreateActivityAndEvent")]

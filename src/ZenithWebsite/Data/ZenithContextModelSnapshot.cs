@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using ZenithWebsite.Data;
 
-namespace ZenithWebsite.Migrations
+namespace ZenithWebsite.Data
 {
     [DbContext(typeof(ZenithContext))]
     partial class ZenithContextModelSnapshot : ModelSnapshot

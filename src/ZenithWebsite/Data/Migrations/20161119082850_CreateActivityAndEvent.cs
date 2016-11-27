@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ZenithWebsite.Migrations
+namespace ZenithWebsite.Data.Migrations
 {
     public partial class CreateActivityAndEvent : Migration
     {
