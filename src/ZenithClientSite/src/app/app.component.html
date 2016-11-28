@@ -83,7 +83,7 @@
             <td class="success" colspan="2">{{key}}</td>
           </tr>
           <tr *ngFor="let event of eventsDictionary[key];">
-            <td >{{event.fromDate+ "-08:00" | date: "h:mm a" }} - {{event.toDate + "-08:00"| date: "h:mm a"}}</td>
+            <td >{{event.fromDate | date: "h:mm a" }} - {{event.toDate | date: "h:mm a"}}</td>
             <td >{{event.activity.activityDescription}}</td>
           </tr>
         </tbody>

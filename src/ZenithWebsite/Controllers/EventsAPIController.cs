@@ -48,6 +48,9 @@ namespace ZenithWebsite.Controllers
                 {
                     if (item.IsActive)
                     {
+                        item.CreationDate = item.CreationDate.ToUniversalTime();
+                        item.FromDate = item.FromDate.ToUniversalTime();
+                        item.ToDate = item.ToDate.ToUniversalTime();
                         Week.Add(item);
                     }
 
@@ -83,6 +86,9 @@ namespace ZenithWebsite.Controllers
                 {
                     if (item.IsActive)
                     {
+                        item.CreationDate = item.CreationDate.ToUniversalTime();
+                        item.FromDate = item.FromDate.ToUniversalTime();
+                        item.ToDate = item.ToDate.ToUniversalTime();
                         Week.Add(item);
                     }
 
