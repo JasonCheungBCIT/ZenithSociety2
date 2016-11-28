@@ -219,17 +219,17 @@ namespace ZenithWebsite
         {
             var user = await _userManager.FindByNameAsync( HttpContext.User.Identity.Name);
 
-            if (!(_userManager.IsInRoleAsync(user, "Admin").Result
-                && _userManager.IsInRoleAsync(user, "Member").Result))
+            if (_userManager.IsInRoleAsync(user, "Admin").Result
+                || _userManager.IsInRoleAsync(user, "Member").Result)
             {
-                return Ok(new JsonResult("false")
+                return Ok(new JsonResult("true")
                 {
                     StatusCode = 200
                 });
-            } 
+            }
             else
             {
-                return Ok(new JsonResult("true")
+                return Ok(new JsonResult("false")
                 {
                     StatusCode = 200
                 });
