@@ -18,7 +18,7 @@ namespace ZenithWebsite.Models.ZenithSocietyModels
         [Required]
         [AfterNow()]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MMMM dd, yyyy - h:mm tt}")] // IMPORTANT: This MUST be in this format. Refer to notes.
+        [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy - h:mm tt}")] // IMPORTANT: This MUST be in this format. Refer to notes.
         [Display(Name = "From")]
         public DateTime FromDate { get; set; }
 
@@ -26,7 +26,7 @@ namespace ZenithWebsite.Models.ZenithSocietyModels
         [AfterTime("FromDate")]
         [SameDay("FromDate")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MMMM dd, yyyy - h:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy - h:mm tt}")]
         [Display(Name = "To")]
         public DateTime ToDate { get; set; }
 

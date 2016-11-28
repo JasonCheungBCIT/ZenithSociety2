@@ -24,8 +24,11 @@ namespace ZenithWebsite.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            var zenithContext = _context.Event.Include(@event => @event.Activity);
-            return View(await zenithContext.ToListAsync());
+            var events = await _context.Event
+                .Include(@event => @event.Activity)
+                .OrderBy(e => e.FromDate)
+                .ToListAsync();
+            return View(events);
         }
 
         // GET: Events/Details/5

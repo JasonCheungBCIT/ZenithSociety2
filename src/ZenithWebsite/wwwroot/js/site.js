@@ -1,2 +1,4 @@
 ﻿// Write your Javascript code.
-$(".datetimepicker").datetimepicker(); 
+$(".datetimepicker").datetimepicker({
+    format: 'YYYY/MM/DD hh:mm A'
+});
