@@ -1,6 +1,5 @@
 ﻿===== SETUP =====
 dotnet restore
-dotnet ef migrations add YourMigrationName --context ApplicationDbContext 
-dotnet ef migrations add YourMigrationName --context ZenithContext 
-dotnet ef migrations add YourMigrationName --context ApplicationDbContextModelSnapshot
+dotnet ef database update --context ApplicationDbContext 
+dotnet ef database update --context ZenithContext 
 dotnet run
